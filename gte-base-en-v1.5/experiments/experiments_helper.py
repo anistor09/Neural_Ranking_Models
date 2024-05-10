@@ -32,20 +32,42 @@ def load_dense_index_from_disk(dataset_name, query_encoder, mode=Mode.MAXP):
     return ff_index.to_memory()
 
 
-def run_experiment(pipeline, dataset):
-    test_set = pt.get_dataset(dataset)
-    return pt.Experiment(
-        [pipeline],
-        test_set.get_topics(),
-        test_set.get_qrels(),
-        eval_metrics=[RR @ 10, nDCG @ 10, MAP @ 100],
+def find_optimal_alpha(pipeline, ff_int, dev_set, alpha_vals=[0.25, 0.05, 0.1, 0.5, 0.9]):
+    pt.GridSearch(
+        pipeline,
+        {ff_int: {"alpha": alpha_vals}},
+        dev_set.get_topics(),
+        dev_set.get_qrels(),
+        "map",
+        verbose=True,
     )
 
-def run_experiments(pipelines, dataset):
-    test_set = pt.get_dataset(dataset)
+
+def run_single_experiment_name(pipeline, dataset_name, evaluation_metrics, name):
+    test_set = pt.get_dataset(dataset_name)
+    run_single_experiment(pipeline, test_set, evaluation_metrics, name)
+
+
+def run_single_experiment(pipeline, test_set, evaluation_metrics, name):
     return pt.Experiment(
-        [pipelines],
+        pipeline,
         test_set.get_topics(),
         test_set.get_qrels(),
-        eval_metrics=[RR @ 10, nDCG @ 10, MAP @ 100],
+        eval_metrics=evaluation_metrics,
+        names=[name]
+    )
+
+
+def run_multiple_experiment_name(pipeline, dataset_name, evaluation_metrics, names):
+    test_set = pt.get_dataset(dataset_name)
+    run_multiple_experiment(pipeline, test_set, evaluation_metrics, names)
+
+
+def run_multiple_experiment(pipeline, test_set, evaluation_metrics, names):
+    return pt.Experiment(
+        pipeline,
+        test_set.get_topics(),
+        test_set.get_qrels(),
+        eval_metrics=evaluation_metrics,
+        names=names
     )
