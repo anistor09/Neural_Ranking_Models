@@ -29,10 +29,17 @@ def split_dev_test(qrels, test_size):
     return dev_qrels, test_qrels
 
 
+def format_filename(text):
+    if '/' in text:
+        return text.split('/')[0] + "_" + text.split('/')[1]
+    else:
+        return text
+
+
 def load_dense_index_from_disk(dataset_name, query_encoder, mode=Mode.MAXP):
     model_name = "gte-base-en-v1.5"
 
-    index_path = "../" + "dense_indexes/ffindex_" + dataset_name + "_" + model_name + ".h5"
+    index_path = "../" + "dense_indexes/ffindex_" + format_filename(dataset_name) + "_" + model_name + ".h5"
 
     # Retrieve from disk
 
@@ -124,6 +131,21 @@ def default_complete_test_pipeline(dataset_name, qrels, dev_topics, test_topics,
     # Pipeline for finding optimal alpha
     pipeline_find_alpha = retriever % 100 >> ff_score >> ff_int
     find_optimal_alpha(pipeline_find_alpha, ff_int, dev_topics, qrels)
+
+    experiment_name = dataset_name + ": BM25 >> gte-base-en-v1.5"
+    default_pipeline = retriever % 1000 >> ff_score >> ff_int
+    return run_single_experiment(default_pipeline, test_topics, qrels, eval_metrics, experiment_name)
+
+
+def default_complete_test_pipeline_nogrid(dataset_name, qrels, dev_topics, test_topics, q_encoder, eval_metrics):
+    # Spare index
+    retriever = load_sparse_index_from_disk(dataset_name)
+
+    # Dense index
+    dense_index = load_dense_index_from_disk(dataset_name, q_encoder)
+
+    ff_score = FFScore(dense_index)
+    ff_int = FFInterpolate(alpha=0.05)
 
     experiment_name = dataset_name + ": BM25 >> gte-base-en-v1.5"
     default_pipeline = retriever % 1000 >> ff_score >> ff_int

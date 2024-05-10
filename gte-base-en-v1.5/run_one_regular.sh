@@ -20,5 +20,5 @@ module load cuda
 python -m pip install --user python-terrier==0.10.0 fast-forward-indexes==0.2.0 jupyter ipywidgets transformers typing pathlib
 
 # Run the experiment
-srun python index_one_dataset.py > prints.txt
+srun python dense_index_one_dataset.py > prints.txt
 

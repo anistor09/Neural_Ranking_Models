@@ -52,7 +52,7 @@ def index_collection(dataset_name):
 
 
 def main():
-    dataset_name = "arguana"
+    dataset_name = "scifact"
     index_collection(dataset_name)
 
 
