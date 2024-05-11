@@ -1,10 +1,9 @@
 import pyterrier as pt
-from pyterrier.measures import RR, nDCG, MAP
 from fast_forward import OnDiskIndex, Mode
 from pathlib import Path
 from sklearn.model_selection import train_test_split
 from fast_forward.util.pyterrier import FFScore
-
+import time
 from fast_forward.util.pyterrier import FFInterpolate
 
 SEED = 42
@@ -47,6 +46,7 @@ def load_dense_index_from_disk(dataset_name, query_encoder, mode=Mode.MAXP):
         Path(index_path), query_encoder=query_encoder, mode=mode)
     # Return index loaded into memory
 
+    # return ff_index.to_memory()
     return ff_index.to_memory()
 
 
@@ -99,7 +99,22 @@ def run_multiple_experiment(pipeline, topics, qrels, evaluation_metrics, names):
     )
 
 
-def default_complete_test_pipeline_name(dataset_name, dev_set_name, test_set_name, q_encoder, eval_metrics):
+def default_complete_test_pipeline_name(dataset_name, test_set_name, q_encoder, eval_metrics,
+                                        dev_set_name=None):
+    test_set = pt.get_dataset(test_set_name)
+
+    dev_topics = None
+    if dev_set_name is not None:
+        dev_set = pt.get_dataset(dev_set_name)
+        dev_topics = dev_set.get_topics()
+
+    return default_complete_test_pipeline(dataset_name, test_set.get_qrels(), test_set.get_topics(), q_encoder,
+                                          eval_metrics,
+                                          dev_topics)
+
+
+def default_complete_test_pipeline(dataset_name, qrels, test_topics, q_encoder, eval_metrics,
+                                   dev_topics=None):
     # Spare index
     retriever = load_sparse_index_from_disk(dataset_name)
 
@@ -109,44 +124,25 @@ def default_complete_test_pipeline_name(dataset_name, dev_set_name, test_set_nam
     ff_score = FFScore(dense_index)
     ff_int = FFInterpolate(alpha=0.05)
 
-    # Pipeline for finding optimal alpha
-    pipeline_find_alpha = retriever % 100 >> ff_score >> ff_int
-    find_optimal_alpha_name(pipeline_find_alpha, ff_int, dev_set_name)
-
-    experiment_name = dataset_name + ": BM25 >> gte-base-en-v1.5"
-    default_pipeline = retriever % 1000 >> ff_score >> ff_int
-    return run_single_experiment_name(default_pipeline, test_set_name, eval_metrics, experiment_name)
-
-
-def default_complete_test_pipeline(dataset_name, qrels, dev_topics, test_topics, q_encoder, eval_metrics):
-    # Spare index
-    retriever = load_sparse_index_from_disk(dataset_name)
-
-    # Dense index
-    dense_index = load_dense_index_from_disk(dataset_name, q_encoder)
-
-    ff_score = FFScore(dense_index)
-    ff_int = FFInterpolate(alpha=0.05)
-
-    # Pipeline for finding optimal alpha
-    pipeline_find_alpha = retriever % 100 >> ff_score >> ff_int
-    find_optimal_alpha(pipeline_find_alpha, ff_int, dev_topics, qrels)
-
-    experiment_name = dataset_name + ": BM25 >> gte-base-en-v1.5"
-    default_pipeline = retriever % 1000 >> ff_score >> ff_int
-    return run_single_experiment(default_pipeline, test_topics, qrels, eval_metrics, experiment_name)
-
-
-def default_complete_test_pipeline_nogrid(dataset_name, qrels, dev_topics, test_topics, q_encoder, eval_metrics):
-    # Spare index
-    retriever = load_sparse_index_from_disk(dataset_name)
-
-    # Dense index
-    dense_index = load_dense_index_from_disk(dataset_name, q_encoder)
-
-    ff_score = FFScore(dense_index)
-    ff_int = FFInterpolate(alpha=0.05)
+    # If devset is present run alpha optimization
+    if dev_topics is not None:
+        # Pipeline for finding optimal alpha
+        pipeline_find_alpha = retriever % 100 >> ff_score >> ff_int
+        find_optimal_alpha(pipeline_find_alpha, ff_int, dev_topics, qrels)
 
     experiment_name = dataset_name + ": BM25 >> gte-base-en-v1.5"
     default_pipeline = retriever % 1000 >> ff_score >> ff_int
     return run_single_experiment(default_pipeline, test_topics, qrels, eval_metrics, experiment_name)
+
+
+def time_fct(func, *args, **kwargs):
+    start_time = time.perf_counter()
+    result = func(*args, **kwargs)
+    end_time = time.perf_counter()
+    elapsed_time = end_time - start_time
+    print(f"Experiment took {elapsed_time:.3f} seconds to execute.")
+    return result
+
+
+def time_fct_print_results(func, *args, **kwargs):
+    print(time_fct(func, *args, **kwargs))

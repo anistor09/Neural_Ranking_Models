@@ -1,6 +1,6 @@
 import pyterrier as pt
 from pathlib import Path
-from encoder.gte_base_en_encoder import GTEBaseDocumentEncoder
+from gte_base_en_encoder import GTEBaseDocumentEncoder
 import torch
 from fast_forward import OnDiskIndex, Mode, Indexer
 

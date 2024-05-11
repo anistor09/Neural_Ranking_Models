@@ -13,9 +13,13 @@ def runtest():
     eval_metrics = [RR @ 10, nDCG @ 10, MAP @ 100]
 
     q_encoder = GTEBaseDocumentEncoder("Alibaba-NLP/gte-base-en-v1.5")
-    dataset_name = "cqadupstack/english"
-    dataset = pt.get_dataset("irds:beir/cqadupstack/english")
-    topics = dataset.get_topics('text')
+    # dataset_name = "cqadupstack/english"
+    # dataset = pt.get_dataset("irds:beir/cqadupstack/english")
+    # topics = dataset.get_topics('text')
+
+    dataset_name = "arguana"
+    dataset = pt.get_dataset("irds:beir/arguana")
+    topics = dataset.get_topics()
 
     dev_topics, test_topics = split_dev_test(topics, test_size=0.8)
 
