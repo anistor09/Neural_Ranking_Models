@@ -42,7 +42,7 @@ def index_collection(dataset_name):
         "Alibaba-NLP/gte-base-en-v1.5",
         device="cuda:0" if torch.cuda.is_available() else "cpu",
     )
-    index_path = "dense_indexes/ffindex_" + format_filename(dataset_name) + "_gte-base-en-v1.5.h5"
+    index_path = "../dense_indexes/ffindex_" + format_filename(dataset_name) + "_gte-base-en-v1.5.h5"
     ff_index = OnDiskIndex(
         Path(index_path), dim=768, query_encoder=q_encoder, mode=Mode.MAXP, max_id_length=47
     )
