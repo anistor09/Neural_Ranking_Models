@@ -33,7 +33,7 @@ def main():
     )
 
     ff_index = OnDiskIndex(
-        Path("../dense_indexes/ffindex_fiqa_snowflake_m.h5"), dim=768, query_encoder=q_encoder, mode=Mode.MAXP
+        Path("../ffindex_fiqa_snowflake_m.h5"), dim=768, query_encoder=q_encoder, mode=Mode.MAXP
     )
 
     ff_indexer = Indexer(ff_index, d_encoder, batch_size=8)
