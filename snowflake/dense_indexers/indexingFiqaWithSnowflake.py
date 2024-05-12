@@ -1,6 +1,6 @@
 import pyterrier as pt
 from pathlib import Path
-from snowflake_encoder import SnowFlakeDocumentEncoder, SnowFlakeQueryEncoder
+from encoders.snowflake_arctic_embed_m import SnowFlakeDocumentEncoder, SnowFlakeQueryEncoder
 import torch
 from fast_forward import OnDiskIndex, Mode, Indexer
 
@@ -8,6 +8,7 @@ from fast_forward import OnDiskIndex, Mode, Indexer
 def docs_iter(dataset):
     for d in dataset.get_corpus_iter():
         yield {"doc_id": d["docno"], "text": d["text"]}
+
 
 # def docs_iter(dataset, limit=10):
 #     # Iterate over the documents and yield up to 'limit' documents
