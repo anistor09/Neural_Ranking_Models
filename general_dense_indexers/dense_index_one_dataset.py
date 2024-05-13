@@ -50,7 +50,9 @@ def index_collection(dataset_name, model_name, q_encoder, d_encoder, max_id_leng
     else:
         print("cuda is not available")
 
-    index_path = directory + "/dense_indexes/ffindex_" + get_dataset_name(dataset_name) + "_" + format_name(model_name)
+    index_path = directory + "/dense_indexes/ffindex_" + get_dataset_name(dataset_name) + "_" + format_name(
+        model_name) + ".h5"
+
     ff_index = OnDiskIndex(
         Path(index_path), dim=dim, query_encoder=q_encoder, mode=mode, max_id_length=max_id_length
     )
