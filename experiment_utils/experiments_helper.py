@@ -159,19 +159,19 @@ def test_first_stage_retrieval_name(dataset_name, test_set_name, eval_metrics, p
                                     path_to_root):
     test_set = pt.get_dataset(test_set_name)
 
-    return test_first_stage_retrieval(dataset_name, test_set.get_qrels(), test_set.get_topics(), eval_metrics,
+    return test_first_stage_retrieval(dataset_name, test_set.get_topics(), test_set.get_qrels(), eval_metrics,
                                       pipeline_name,
                                       path_to_root)
 
 
 def test_first_stage_retrieval(dataset_name, test_topics, test_qrels, eval_metrics, pipeline_name,
-                               path_to_root):
+                               path_to_root, timed=False):
     # Spare index
     retriever = load_sparse_index_from_disk(dataset_name, path_to_root)
 
-    experiment_name = dataset_name + ": " + pipeline_name
+    experiment_name = get_dataset_name(dataset_name) + ": " + pipeline_name
 
-    return run_single_experiment(retriever, test_topics, test_qrels, eval_metrics, experiment_name)
+    return run_single_experiment(retriever, test_topics, test_qrels, eval_metrics, experiment_name, timed)
 
 
 def time_fct(func, *args, **kwargs):
