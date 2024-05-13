@@ -1,7 +1,6 @@
 import pyterrier as pt
 from fast_forward import OnDiskIndex, Mode
 from pathlib import Path
-from sklearn.model_selection import train_test_split
 from fast_forward.util.pyterrier import FFScore
 import time
 from fast_forward.util.pyterrier import FFInterpolate
@@ -20,11 +19,6 @@ def load_sparse_index_from_disk(dataset_name, path_to_root, in_memory=True, wmod
     bm25 = pt.BatchRetrieve(index, wmodel=wmodel)
 
     return bm25
-
-
-def split_dev_test(qrels, test_size):
-    dev_qrels, test_qrels = train_test_split(qrels, test_size=test_size, random_state=SEED)
-    return dev_qrels, test_qrels
 
 
 def load_dense_index_from_disk(dataset_name, query_encoder, model_name, mode=Mode.MAXP):
@@ -156,12 +150,12 @@ def default_test_pipeline(dataset_name, test_topics, test_qrels, q_encoder, eval
 
 
 def test_first_stage_retrieval_name(dataset_name, test_set_name, eval_metrics, pipeline_name,
-                                    path_to_root):
+                                    path_to_root, timed=False):
     test_set = pt.get_dataset(test_set_name)
 
     return test_first_stage_retrieval(dataset_name, test_set.get_topics(), test_set.get_qrels(), eval_metrics,
                                       pipeline_name,
-                                      path_to_root)
+                                      path_to_root, timed)
 
 
 def test_first_stage_retrieval(dataset_name, test_topics, test_qrels, eval_metrics, pipeline_name,
