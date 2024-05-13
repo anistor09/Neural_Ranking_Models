@@ -26,7 +26,14 @@ def get_dataset_name(text):
     parts = re.split('[:/-]', text)
 
     if len(parts) > 2:
-        return parts[2]  # Retrieve the second element
+        dataset_name = ""
+        for i in range(2, len(parts)):
+            dataset_name += parts[i] + "_"
+
+        if dataset_name.endswith('_'):
+            return dataset_name[:-1]
+        return dataset_name
+
     else:
         print("No third element available")
 
