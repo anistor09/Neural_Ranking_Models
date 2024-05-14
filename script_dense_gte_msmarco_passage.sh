@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name="test_library"
-#SBATCH --time=08:00:00
+#SBATCH --time=00:30:00
 #SBATCH --partition=gpu-a100
 #SBATCH --gpus-per-task=1
 #SBATCH --ntasks=1

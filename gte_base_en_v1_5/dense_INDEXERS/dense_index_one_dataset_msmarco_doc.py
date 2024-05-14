@@ -10,7 +10,7 @@ def index_gte_collection(dataset_name, max_id_length, directory, model_name):
         "Alibaba-NLP/" + model_name,
         device="cuda:0" if torch.cuda.is_available() else "cpu",
     )
-    index_collection(dataset_name, model_name, q_encoder, d_encoder, max_id_length, directory, batch_size=8, dim=768,
+    index_collection(dataset_name, model_name, q_encoder, d_encoder, max_id_length, directory, batch_size=512, dim=768,
                      mode=Mode.MAXP)
 
 
