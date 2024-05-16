@@ -1,12 +1,12 @@
 import torch
 from fast_forward import Mode
 from general_dense_indexers.dense_index_one_dataset import index_collection
-from encoders.bge_base_en import BgeDocumentEncoder
+from encoders.bge_base_en import BgeEncoder
 
 
 def index_bge_collection(dataset_name, max_id_length, directory, model_name):
-    q_encoder = BgeDocumentEncoder("BAAI/" + model_name)
-    d_encoder = BgeDocumentEncoder(
+    q_encoder = BgeEncoder("BAAI/" + model_name)
+    d_encoder = BgeEncoder(
         "BAAI/" + model_name,
         device="cuda:0" if torch.cuda.is_available() else "cpu",
     )

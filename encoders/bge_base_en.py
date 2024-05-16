@@ -6,7 +6,7 @@ from pathlib import Path
 import torch
 
 
-class BgeDocumentEncoder(Encoder):
+class BgeEncoder(Encoder):
     """Uses a pre-trained transformer model for encoding. Returns the pooler output."""
 
     def __init__(
