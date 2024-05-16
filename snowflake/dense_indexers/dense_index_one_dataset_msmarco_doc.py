@@ -23,7 +23,12 @@ def main():
     dataset_name = "irds:msmarco-document/trec-dl-2019"
     max_id_length = 8
     directory = "snowflake"
-    index_snowflake_m_collection(dataset_name, max_id_length, directory)
+    try:
+        index_snowflake_m_collection(dataset_name, max_id_length, directory)
+
+    except Exception as e:
+        # Handles any other exceptions
+        print(f"An error occurred: {e}")
 
 
 if __name__ == '__main__':
