@@ -9,10 +9,11 @@ from general_dense_indexers.dense_index_one_dataset import get_dataset_name, for
 SEED = 42
 
 
-def load_sparse_index_from_disk(dataset_name, path_to_root, in_memory=True, wmodel="BM25"):
-    index_path = path_to_root + "sparse_indexes/sparse_index_" + get_dataset_name(dataset_name)
+def load_sparse_index_from_disk(dataset_name, path_to_root, in_memory=True, wmodel="BM25", index_path=None):
+    if index_path is None:
+        index_path = path_to_root + "sparse_indexes/sparse_index_" + get_dataset_name(dataset_name)
 
-    # Load index to memory
+    # Load index to memory if not specified otherwise
 
     index = pt.IndexFactory.of(index_path, memory=in_memory)
 
@@ -21,7 +22,7 @@ def load_sparse_index_from_disk(dataset_name, path_to_root, in_memory=True, wmod
     return bm25
 
 
-def load_dense_index_from_disk(dataset_name, query_encoder, model_name, mode=Mode.MAXP):
+def load_dense_index_from_disk(dataset_name, query_encoder, model_name, mode=Mode.MAXP, in_memory=True):
     index_path = "../" + "dense_indexes/ffindex_" + get_dataset_name(dataset_name) + "_" + format_name(
         model_name) + ".h5"
 
@@ -30,7 +31,10 @@ def load_dense_index_from_disk(dataset_name, query_encoder, model_name, mode=Mod
     ff_index = OnDiskIndex.load(
         Path(index_path), query_encoder=query_encoder, mode=mode)
     # Return index loaded into memory
-    return ff_index.to_memory()
+    if in_memory:
+        return ff_index.to_memory()
+    else:
+        return ff_index
 
 
 def find_optimal_alpha_name(pipeline, ff_int, dev_set_name, alpha_vals=None):
@@ -108,21 +112,26 @@ def get_test_dev_sets(test_set_name, dev_set_name):
 
 
 def default_test_pipeline_name(dataset_name, test_set_name, q_encoder, eval_metrics, model_name, pipeline_name,
-                               path_to_root, dev_set_name=None, timed=False, alpha=0.05):
+                               path_to_root, dev_set_name=None, timed=False, alpha=0.05, in_memory_sparse=True,
+                               in_memory_dense=True, index_path=None):
     test_topics, test_qrels, dev_topics, dev_qrels = get_test_dev_sets(test_set_name, dev_set_name)
 
     return default_test_pipeline(dataset_name, test_topics, test_qrels, q_encoder,
                                  eval_metrics, model_name, pipeline_name, path_to_root,
-                                 dev_topics, dev_qrels, timed=timed, alpha=alpha)
+                                 dev_topics, dev_qrels, timed=timed, alpha=alpha, in_memory_sparse=in_memory_sparse,
+                                 in_memory_dense=in_memory_dense,
+                                 index_path=index_path)
 
 
 def load_pipeline_dependencies(dataset_name, q_encoder, model_name, pipeline_name,
-                               path_to_root, dev_topics=None, dev_qrels=None, alpha=0.05):
+                               path_to_root, dev_topics=None, dev_qrels=None, alpha=0.05, in_memory_sparse=True,
+                               in_memory_dense=True, index_path=None):
     # Spare index
-    retriever = load_sparse_index_from_disk(dataset_name, path_to_root)
+    retriever = load_sparse_index_from_disk(dataset_name, path_to_root, in_memory=in_memory_sparse,
+                                            index_path=index_path)
 
     # Dense index
-    dense_index = load_dense_index_from_disk(dataset_name, q_encoder, model_name)
+    dense_index = load_dense_index_from_disk(dataset_name, q_encoder, model_name, in_memory=in_memory_dense)
 
     ff_score = FFScore(dense_index)
     ff_int = FFInterpolate(alpha=alpha)
@@ -140,28 +149,36 @@ def load_pipeline_dependencies(dataset_name, q_encoder, model_name, pipeline_nam
 
 
 def default_test_pipeline(dataset_name, test_topics, test_qrels, q_encoder, eval_metrics, model_name, pipeline_name,
-                          path_to_root, dev_topics=None, dev_qrels=None, timed=False, alpha=0.05):
+                          path_to_root, dev_topics=None, dev_qrels=None, timed=False, alpha=0.05, in_memory_sparse=True,
+                          in_memory_dense=True, index_path=None):
     default_pipeline, experiment_name = load_pipeline_dependencies(dataset_name, q_encoder, model_name,
                                                                    pipeline_name,
                                                                    path_to_root, dev_topics=dev_topics,
-                                                                   dev_qrels=dev_qrels, alpha=alpha)
+                                                                   dev_qrels=dev_qrels, alpha=alpha,
+                                                                   in_memory_sparse=in_memory_sparse,
+                                                                   in_memory_dense=in_memory_dense,
+                                                                   index_path=index_path)
 
     return run_single_experiment(default_pipeline, test_topics, test_qrels, eval_metrics, experiment_name, timed)
 
 
 def test_first_stage_retrieval_name(dataset_name, test_set_name, eval_metrics, pipeline_name,
-                                    path_to_root, timed=False):
+                                    path_to_root, timed=False, in_memory_sparse=True,
+                                    index_path=None):
     test_set = pt.get_dataset(test_set_name)
 
     return test_first_stage_retrieval(dataset_name, test_set.get_topics(), test_set.get_qrels(), eval_metrics,
                                       pipeline_name,
-                                      path_to_root, timed)
+                                      path_to_root, timed, in_memory_sparse=in_memory_sparse,
+                                      index_path=index_path)
 
 
 def test_first_stage_retrieval(dataset_name, test_topics, test_qrels, eval_metrics, pipeline_name,
-                               path_to_root, timed=False):
+                               path_to_root, timed=False, in_memory_sparse=True,
+                               index_path=None):
     # Spare index
-    retriever = load_sparse_index_from_disk(dataset_name, path_to_root)
+    retriever = load_sparse_index_from_disk(dataset_name, path_to_root, in_memory=in_memory_sparse,
+                                            index_path=index_path)
 
     experiment_name = get_dataset_name(dataset_name) + ": " + pipeline_name
 

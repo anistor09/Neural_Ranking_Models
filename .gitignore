@@ -7,3 +7,6 @@ intro-pyterrier/nfcorpus_index_with_blocks
 intro-pyterrier/results
 intro-pyterrier/ffindex_fiqa_tct.h5
 .idea/
+/bge/dense_indexes/
+/gte_base_en_v1_5/dense_indexes/
+/snowflake/dense_indexes/
