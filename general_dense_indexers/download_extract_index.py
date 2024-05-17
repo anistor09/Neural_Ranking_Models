@@ -35,17 +35,17 @@ def download_index(model_directory, path_to_root, url, index_filename):
     # Command to download the file
     wget_command = f"wget {url} -P {base_path}"
     print("Downloading file...")
-    subprocess.run(wget_command, shell=True)
+    # subprocess.run(wget_command, shell=True)
 
     # Command to extract the file
     extract_command = f"tar xf {download_path} -C {base_path}"
     print("Extracting file...")
-    subprocess.run(extract_command, shell=True)
+    # subprocess.run(extract_command, shell=True)
 
     # Command to remove the downloaded tar file
     remove_command = f"rm {download_path}"
     print("Removing downloaded .tar.gz file...")
-    subprocess.run(remove_command, shell=True)
+    # subprocess.run(remove_command, shell=True)
 
     new_filename = filename.rsplit('.tar.gz', 1)[0]
 
@@ -66,13 +66,12 @@ def main():
 
     # if run from project root path-to_root = ""
 
-    path_to_root = ".."
+    path_to_root = ""
     prefix_url = "https://rgw.cs.uwaterloo.ca/pyserini/indexes/faiss/"
     downloaded_file = "faiss-flat.msmarco-v1-passage.bge-base-en-v1.5.20240107.tar.gz"
     dataset_name = "irds:msmarco-passage/trec-dl-2019"
     model_name = "bge-base-en-v1.5"
     index_filename = "ffindex_" + get_dataset_name(dataset_name) + "_" + format_name(model_name) + ".h5"
-
     download_index(model_directory, path_to_root, prefix_url + downloaded_file, index_filename)
 
 
