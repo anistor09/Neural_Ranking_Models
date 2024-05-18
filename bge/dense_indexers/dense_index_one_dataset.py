@@ -1,6 +1,6 @@
 import torch
 from fast_forward import Mode
-from general_dense_indexers.dense_index_one_dataset import index_collection
+from general_dense_indexers.dense_index_one_dataset_2 import index_collection
 from encoders.bge_base_en import BgeEncoder
 
 
@@ -20,10 +20,15 @@ def index_bge_base_collection(dataset_name, max_id_length, directory):
 
 
 def main():
-    dataset_name = "irds:beir/fiqa"
-    max_id_length = 6
+    dataset_name = "irds:beir/dbpedia-entity"
+    max_id_length = 200
     directory = "bge"
-    index_bge_base_collection(dataset_name, max_id_length, directory)
+    try:
+        index_bge_base_collection(dataset_name, max_id_length, directory)
+
+    except Exception as e:
+        # Handles any other exceptions
+        print(f"An error occurred: {e}")
 
 
 if __name__ == '__main__':

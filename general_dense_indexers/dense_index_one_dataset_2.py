@@ -15,7 +15,7 @@ def docs_iter(dataset, limit=1000):
     for count, d in enumerate(dataset.get_corpus_iter()):
         if count >= limit:
             break
-        yield {"doc_id": d["docno"], "text": d["body"]}
+        yield {"doc_id": d["docno"].encode("utf-8"), "text": d["text"]}
 
 
 def format_name(text):
