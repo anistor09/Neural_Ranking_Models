@@ -16,7 +16,7 @@ module load cuda
 
 
 # Install dependencies
-python -m pip install --user python-terrier==0.10.0 fast-forward-indexes==0.2.0 jupyter ipywidgets transformers typing pathlib
+python -m pip install --user python-terrier==0.10.0 fast-forward-indexes==0.2.0 jupyter ipywidgets transformers typing pathlib faiss-cpu
 
 # Run the experiment
 srun python  -m general_dense_indexers.download_extract_index > prints.txt

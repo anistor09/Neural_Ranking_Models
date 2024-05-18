@@ -72,7 +72,12 @@ def main():
     dataset_name = "irds:msmarco-passage/trec-dl-2019"
     model_name = "bge-base-en-v1.5"
     index_filename = "ffindex_" + get_dataset_name(dataset_name) + "_" + format_name(model_name) + ".h5"
-    download_index(model_directory, path_to_root, prefix_url + downloaded_file, index_filename)
+    try:
+        download_index(model_directory, path_to_root, prefix_url + downloaded_file, index_filename)
+
+    except Exception as e:
+        # Handles any other exceptions
+        print(f"An error occurred: {e}")
 
 
 if __name__ == "__main__":
