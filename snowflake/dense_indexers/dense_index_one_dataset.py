@@ -1,6 +1,6 @@
 import torch
 from fast_forward import Mode
-from general_dense_indexers.dense_index_one_dataset import index_collection
+from general_dense_indexers.dense_index_one_dataset_2 import index_collection
 from encoders.snowflake_arctic_embed_m import SnowFlakeDocumentEncoder, SnowFlakeQueryEncoder
 
 
@@ -20,8 +20,8 @@ def index_snowflake_m_collection(dataset_name, max_id_length, directory):
 
 
 def main():
-    dataset_name = "irds:beir/fiqa"
-    max_id_length = 6
+    dataset_name = "irds:beir/dbpedia-entity"
+    max_id_length = 200
     directory = "snowflake"
     index_snowflake_m_collection(dataset_name, max_id_length, directory)
 
