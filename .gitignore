@@ -10,3 +10,4 @@ intro-pyterrier/ffindex_fiqa_tct.h5
 /bge/dense_indexes/
 /gte_base_en_v1_5/dense_indexes/
 /snowflake/dense_indexes/
+/tct_colbert/dense_indexes/
