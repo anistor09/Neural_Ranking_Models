@@ -112,7 +112,7 @@ def get_test_dev_sets(test_set_name, dev_set_name):
 
 
 def default_test_pipeline_name(dataset_name, test_set_name, q_encoder, eval_metrics, model_name, pipeline_name,
-                               path_to_root, dev_set_name=None, timed=False, alpha=0.05, in_memory_sparse=True,
+                               path_to_root, dev_set_name=None, timed=False, alpha=0.005, in_memory_sparse=True,
                                in_memory_dense=True, index_path=None):
     test_topics, test_qrels, dev_topics, dev_qrels = get_test_dev_sets(test_set_name, dev_set_name)
 
@@ -124,7 +124,7 @@ def default_test_pipeline_name(dataset_name, test_set_name, q_encoder, eval_metr
 
 
 def load_pipeline_dependencies(dataset_name, q_encoder, model_name, pipeline_name,
-                               path_to_root, dev_topics=None, dev_qrels=None, alpha=0.05, in_memory_sparse=True,
+                               path_to_root, dev_topics=None, dev_qrels=None, alpha=0.005, in_memory_sparse=True,
                                in_memory_dense=True, index_path=None):
     # Spare index
     retriever = load_sparse_index_from_disk(dataset_name, path_to_root, in_memory=in_memory_sparse,
@@ -149,7 +149,7 @@ def load_pipeline_dependencies(dataset_name, q_encoder, model_name, pipeline_nam
 
 
 def default_test_pipeline(dataset_name, test_topics, test_qrels, q_encoder, eval_metrics, model_name, pipeline_name,
-                          path_to_root, dev_topics=None, dev_qrels=None, timed=False, alpha=0.05, in_memory_sparse=True,
+                          path_to_root, dev_topics=None, dev_qrels=None, timed=False, alpha=0.005, in_memory_sparse=True,
                           in_memory_dense=True, index_path=None):
     default_pipeline, experiment_name = load_pipeline_dependencies(dataset_name, q_encoder, model_name,
                                                                    pipeline_name,
