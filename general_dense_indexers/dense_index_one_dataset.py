@@ -10,13 +10,6 @@ def docs_iter(dataset):
         yield {"doc_id": d["docno"], "text": d["text"]}
 
 
-# def docs_iter(dataset, limit=1000):
-#     # Iterate over the documents and yield up to 'limit' documents
-#     for count, d in enumerate(dataset.get_corpus_iter()):
-#         if count >= limit:
-#             break
-#         yield {"doc_id": d["docno"], "text": d["text"]}
-
 
 def format_name(text):
     return re.sub(r'[:/.-]', '_', text)

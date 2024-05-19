@@ -1,6 +1,6 @@
 import torch
 from fast_forward import Mode
-from general_dense_indexers.dense_index_one_dataset_2 import index_collection
+from general_dense_indexers.dense_index_one_dataset import index_collection
 from fast_forward.encoder import TCTColBERTQueryEncoder, TCTColBERTDocumentEncoder
 
 
@@ -22,7 +22,7 @@ def index_castorini_collection(dataset_name, max_id_length, directory):
 def main():
     dataset_name = "irds:beir/dbpedia-entity"
     max_id_length = 200
-    directory = "bge"
+    directory = "tct_colbert"
 
     try:
         index_castorini_collection(dataset_name, max_id_length, directory)
