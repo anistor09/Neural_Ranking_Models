@@ -1,5 +1,6 @@
 from memory_profiler import profile
 import pyterrier as pt
+from general_dense_indexers.dense_index_one_dataset import get_dataset_name
 
 
 def index_one(prefix_dataset, dataset_name, max_doc_id_length):
@@ -8,7 +9,7 @@ def index_one(prefix_dataset, dataset_name, max_doc_id_length):
 
     dataset = pt.get_dataset(prefix_dataset + dataset_name)
 
-    index_path = "./sparse_indexes/sparse_index_" + dataset_name
+    index_path = "./sparse_indexes/sparse_index_" + get_dataset_name(dataset_name)
     indexer = pt.IterDictIndexer(index_path, meta={'docno': max_doc_id_length})
     indexer.index(dataset.get_corpus_iter(), fields=["text"])
 
