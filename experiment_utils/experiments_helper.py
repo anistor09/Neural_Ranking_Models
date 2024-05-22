@@ -126,24 +126,17 @@ def default_test_pipeline_name(dataset_name, test_set_name, q_encoder, eval_metr
 def load_pipeline_dependencies(dataset_name, q_encoder, model_name, pipeline_name,
                                path_to_root, dev_topics=None, dev_qrels=None, alpha=0.005, in_memory_sparse=True,
                                in_memory_dense=True, index_path=None):
-    # Spare index
-    retriever = load_sparse_index_from_disk(dataset_name, path_to_root, in_memory=in_memory_sparse,
-                                            index_path=index_path)
+    # Get sparse retriever and semantic reranker for pipeline creation
 
-    # Dense index
-    dense_index = load_dense_index_from_disk(dataset_name, q_encoder, model_name, in_memory=in_memory_dense)
-
-    ff_score = FFScore(dense_index)
-    ff_int = FFInterpolate(alpha=alpha)
-
-    # If devset is present run alpha optimization
-    if dev_topics is not None:
-        # Pipeline for finding optimal alpha
-        pipeline_find_alpha = retriever % 100 >> ff_score >> ff_int
-        find_optimal_alpha(pipeline_find_alpha, ff_int, dev_topics, dev_qrels)
+    sparse_retriever, semantic_reranker = get_pipeline_transformers(dataset_name, q_encoder, model_name,
+                                                                    path_to_root, dev_topics=dev_topics,
+                                                                    dev_qrels=dev_qrels, alpha=alpha,
+                                                                    in_memory_sparse=in_memory_sparse,
+                                                                    in_memory_dense=in_memory_dense,
+                                                                    index_path=index_path)
 
     experiment_name = get_dataset_name(dataset_name) + ": " + pipeline_name
-    default_pipeline = retriever % 1000 >> ff_score >> ff_int
+    default_pipeline = sparse_retriever % 1000 >> semantic_reranker
 
     return default_pipeline, experiment_name
 
