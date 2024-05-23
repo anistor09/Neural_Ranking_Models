@@ -40,7 +40,7 @@ def load_dense_index_from_disk(dataset_name, query_encoder, model_name, mode=Mod
 def find_optimal_alpha_name(pipeline, ff_int, dev_set_name, alpha_vals=None):
     if alpha_vals is None:
         # alpha_vals = [0.025, 0.05, 0.1, 0.5, 0.9]
-        alpha_vals = [0.01, 0.001, 0.005, 0.02]
+        alpha_vals = [0.01, 0.001, 0.005, 0.02, 0.1, 0.05, 0.2]
     dev_set = pt.get_dataset(dev_set_name)
     find_optimal_alpha(pipeline, ff_int, dev_set.get_topics(),
                        dev_set.get_qrels(), alpha_vals)
@@ -49,7 +49,7 @@ def find_optimal_alpha_name(pipeline, ff_int, dev_set_name, alpha_vals=None):
 def find_optimal_alpha(pipeline, ff_int, topics, qrels, alpha_vals=None):
     if alpha_vals is None:
         # alpha_vals = [0.025, 0.05, 0.1, 0.5, 0.9]
-        alpha_vals = [0.01, 0.001, 0.005, 0.02]
+        alpha_vals = [0.01, 0.001, 0.005, 0.02, 0.1, 0.05, 0.2]
     pt.GridSearch(
         pipeline,
         {ff_int: {"alpha": alpha_vals}},
