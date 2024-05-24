@@ -4,6 +4,8 @@ from pathlib import Path
 from fast_forward.util.pyterrier import FFScore
 import time
 from fast_forward.util.pyterrier import FFInterpolate
+
+from fast_forward_indexes_library_enhancements.pipeline_transformers import FFInterpolateNormalized
 from general_dense_indexers.dense_index_one_dataset import get_dataset_name, format_name
 
 SEED = 42
@@ -203,7 +205,8 @@ def get_pipeline_transformers(dataset_name, q_encoder, model_name,
     dense_index = load_dense_index_from_disk(dataset_name, q_encoder, model_name, in_memory=in_memory_dense)
 
     ff_score = FFScore(dense_index)
-    ff_int = FFInterpolate(alpha=alpha)
+    # ff_int = FFInterpolate(alpha=alpha)
+    ff_int = FFInterpolateNormalized(alpha=alpha)
 
     # If devset is present run alpha optimization
     if dev_topics is not None:
