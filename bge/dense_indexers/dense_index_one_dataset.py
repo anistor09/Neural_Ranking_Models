@@ -20,8 +20,8 @@ def index_bge_base_collection(dataset_name, max_id_length, directory):
 
 
 def main():
-    dataset_name = "irds:beir/quora"
-    max_id_length = 6
+    dataset_name = "irds:beir/hotpotqa"
+    max_id_length = 8
     directory = "bge"
     try:
         index_bge_base_collection(dataset_name, max_id_length, directory)
