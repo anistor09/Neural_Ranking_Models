@@ -7,7 +7,7 @@ import re
 
 def docs_iter(dataset):
     for d in dataset.get_corpus_iter():
-        yield {"doc_id": d["docno"], "text": d["text"]}
+        yield {"doc_id": d["docno"].encode("utf-8"), "text": d["text"]}
 
 
 

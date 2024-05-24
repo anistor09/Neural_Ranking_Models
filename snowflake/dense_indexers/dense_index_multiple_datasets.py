@@ -1,7 +1,7 @@
 from snowflake.dense_indexers.dense_index_one_dataset import index_snowflake_m_collection
 
-datasets = ["nfcorpus", "cqadupstack/english", "arguana", "scidocs", "scifact", "fiqa"]
-lengths = [8, 6, 47, 40, 9, 6]
+datasets = ["quora", "fever"]
+lengths = [6, 221]
 prefix_dataset = "irds:beir/"
 directory = "snowflake"
 
@@ -12,7 +12,11 @@ def index_snowflake_m_collections():
 
 
 def main():
-    index_snowflake_m_collections()
+    try:
+        index_snowflake_m_collections()
+    except Exception as e:
+        # Handles any other exceptions
+        print(f"An error occurred: {e}")
 
 
 if __name__ == '__main__':

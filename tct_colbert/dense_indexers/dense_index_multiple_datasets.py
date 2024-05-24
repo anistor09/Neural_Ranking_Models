@@ -1,7 +1,7 @@
 from tct_colbert.dense_indexers.dense_index_one_dataset import index_castorini_collection
 
-datasets = ["nfcorpus", "cqadupstack/english", "arguana", "scidocs", "scifact", "fiqa"]
-lengths = [8, 6, 47, 40, 9, 6]
+datasets = ["quora", "fever"]
+lengths = [6, 221]
 prefix_dataset = "irds:beir/"
 directory = "tct_colbert"
 
