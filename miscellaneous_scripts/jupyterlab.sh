@@ -1,12 +1,12 @@
 #!/bin/bash
 
-#SBATCH --job-name=jupyter
-#SBATCH --partition=compute
+
+#SBATCH --job-name="jupyter"
 #SBATCH --time=00:20:00
-#SBATCH --nodes=1
+#SBATCH --partition=compute
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
-#SBATCH --mem=4G
+#SBATCH --mem-per-cpu=4G
 #SBATCH --account=Education-EEMCS-Courses-CSE3000
 
 # Load modules:
