@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name="test_library"
+#SBATCH --job-name="jupyter_test"
 #SBATCH --time=10:00:00
 #SBATCH --partition=gpu-a100
 #SBATCH --gpus-per-task=1
@@ -26,5 +26,5 @@ python -m pip install --user python-terrier==0.10.0 fast-forward-indexes==0.2.0 
 
 
 # Run the experiment
-srun python -m gte_base_en_v1_5.dense_INDEXERS.dense_index_one_dataset > prints_tct_colbert_single.txt
+srun python -m tct_colbert.dense_indexers.dense_index_one_dataset > prints_tct_colbert_single.txt
 
