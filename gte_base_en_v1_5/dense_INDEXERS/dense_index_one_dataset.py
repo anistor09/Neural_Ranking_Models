@@ -20,8 +20,8 @@ def index_gte_base_collection(dataset_name, max_id_length, directory):
 
 
 def main():
-    dataset_name = "irds:beir/hotpotqa"
-    max_id_length = 8
+    dataset_name = "irds:beir/fever"
+    max_id_length = 221
     directory = "gte_base_en_v1_5"
     try:
         index_gte_base_collection(dataset_name, max_id_length, directory)
