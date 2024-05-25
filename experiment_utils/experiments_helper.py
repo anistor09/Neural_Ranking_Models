@@ -42,7 +42,9 @@ def load_dense_index_from_disk(dataset_name, query_encoder, model_name, mode=Mod
 def find_optimal_alpha_name(pipeline, ff_int, dev_set_name, alpha_vals=None):
     if alpha_vals is None:
         # alpha_vals = [0.025, 0.05, 0.1, 0.5, 0.9]
-        alpha_vals = [0.01, 0.001, 0.005, 0.02, 0.1, 0.05, 0.2]
+        # alpha_vals = [0.01, 0.001, 0.005, 0.02, 0.1, 0.05, 0.2]
+        alpha_vals = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.6, 0.8, 0.9]
+
     dev_set = pt.get_dataset(dev_set_name)
     find_optimal_alpha(pipeline, ff_int, dev_set.get_topics(),
                        dev_set.get_qrels(), alpha_vals)
@@ -51,7 +53,9 @@ def find_optimal_alpha_name(pipeline, ff_int, dev_set_name, alpha_vals=None):
 def find_optimal_alpha(pipeline, ff_int, topics, qrels, alpha_vals=None):
     if alpha_vals is None:
         # alpha_vals = [0.025, 0.05, 0.1, 0.5, 0.9]
-        alpha_vals = [0.01, 0.001, 0.005, 0.02, 0.1, 0.05, 0.2]
+        # alpha_vals = [0.01, 0.001, 0.005, 0.02, 0.1, 0.05, 0.2]
+        alpha_vals = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.6, 0.8, 0.9]
+
     pt.GridSearch(
         pipeline,
         {ff_int: {"alpha": alpha_vals}},
@@ -130,32 +134,36 @@ def load_pipeline_dependencies(dataset_name, q_encoder, model_name, pipeline_nam
                                in_memory_dense=True, index_path=None):
     # Get sparse retriever and semantic reranker for pipeline creation
 
-    sparse_retriever, semantic_reranker = get_pipeline_transformers(dataset_name, q_encoder, model_name,
-                                                                    path_to_root, dev_topics=dev_topics,
-                                                                    dev_qrels=dev_qrels, alpha=alpha,
-                                                                    in_memory_sparse=in_memory_sparse,
-                                                                    in_memory_dense=in_memory_dense,
-                                                                    index_path=index_path)
+    sparse_retriever, semantic_reranker, optimal_alpha = get_pipeline_transformers(dataset_name, q_encoder, model_name,
+                                                                                   path_to_root, dev_topics=dev_topics,
+                                                                                   dev_qrels=dev_qrels, alpha=alpha,
+                                                                                   in_memory_sparse=in_memory_sparse,
+                                                                                   in_memory_dense=in_memory_dense,
+                                                                                   index_path=index_path)
 
     experiment_name = get_dataset_name(dataset_name) + ": " + pipeline_name
     default_pipeline = sparse_retriever % 1000 >> semantic_reranker
 
-    return default_pipeline, experiment_name
+    return default_pipeline, experiment_name, optimal_alpha
 
 
 def default_test_pipeline(dataset_name, test_topics, test_qrels, q_encoder, eval_metrics, model_name, pipeline_name,
                           path_to_root, dev_topics=None, dev_qrels=None, timed=False, alpha=0.005,
                           in_memory_sparse=True,
                           in_memory_dense=True, index_path=None):
-    default_pipeline, experiment_name = load_pipeline_dependencies(dataset_name, q_encoder, model_name,
-                                                                   pipeline_name,
-                                                                   path_to_root, dev_topics=dev_topics,
-                                                                   dev_qrels=dev_qrels, alpha=alpha,
-                                                                   in_memory_sparse=in_memory_sparse,
-                                                                   in_memory_dense=in_memory_dense,
-                                                                   index_path=index_path)
-
-    return run_single_experiment(default_pipeline, test_topics, test_qrels, eval_metrics, experiment_name, timed)
+    default_pipeline, experiment_name, optimal_alpha = load_pipeline_dependencies(dataset_name, q_encoder, model_name,
+                                                                                  pipeline_name,
+                                                                                  path_to_root, dev_topics=dev_topics,
+                                                                                  dev_qrels=dev_qrels, alpha=alpha,
+                                                                                  in_memory_sparse=in_memory_sparse,
+                                                                                  in_memory_dense=in_memory_dense,
+                                                                                  index_path=index_path)
+    result_metrics = run_single_experiment(default_pipeline, test_topics, test_qrels, eval_metrics, experiment_name,
+                                           timed)
+    if dev_topics is not None:
+        return result_metrics, optimal_alpha
+    else:
+        return result_metrics
 
 
 def test_first_stage_retrieval_name(dataset_name, test_set_name, eval_metrics, pipeline_name,
@@ -216,21 +224,28 @@ def get_pipeline_transformers(dataset_name, q_encoder, model_name,
 
     semantic_ranker = ff_score >> ff_int
 
-    return retriever, semantic_ranker
+    if dev_topics is not None:
+        return retriever, semantic_ranker, ff_int.alpha
+    else:
+        return retriever, semantic_ranker, None
 
 
 def get_timeit_dependencies(dataset_name, test_topics, q_encoder, model_name,
                             path_to_root, dev_topics=None, dev_qrels=None, alpha=0.005,
                             in_memory_sparse=True,
                             in_memory_dense=True, index_path=None):
-    sparse_retriever, semantic_reranker = get_pipeline_transformers(dataset_name, q_encoder, model_name,
-                                                                    path_to_root, dev_topics=dev_topics,
-                                                                    dev_qrels=dev_qrels, alpha=alpha,
-                                                                    in_memory_sparse=in_memory_sparse,
-                                                                    in_memory_dense=in_memory_dense,
-                                                                    index_path=index_path)
+    sparse_retriever, semantic_reranker, optimal_alpha = get_pipeline_transformers(dataset_name, q_encoder, model_name,
+                                                                                   path_to_root, dev_topics=dev_topics,
+                                                                                   dev_qrels=dev_qrels, alpha=alpha,
+                                                                                   in_memory_sparse=in_memory_sparse,
+                                                                                   in_memory_dense=in_memory_dense,
+                                                                                   index_path=index_path)
     first_stage_results = sparse_retriever(test_topics)
-    return first_stage_results, semantic_reranker
+
+    if dev_topics is not None:
+        return first_stage_results, semantic_reranker, optimal_alpha
+    else:
+        return first_stage_results, semantic_reranker
 
 
 def time_fct(func, *args, **kwargs):
