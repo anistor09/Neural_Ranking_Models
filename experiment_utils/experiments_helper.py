@@ -4,11 +4,14 @@ from pathlib import Path
 from fast_forward.util.pyterrier import FFScore
 import time
 from fast_forward.util.pyterrier import FFInterpolate
-
+from pyterrier.measures import RR, nDCG, MAP
+import os
+import pandas as pd
 from fast_forward_indexes_library_enhancements.pipeline_transformers import FFInterpolateNormalized
 from general_dense_indexers.dense_index_one_dataset import get_dataset_name, format_name
 
 SEED = 42
+eval_metrics = [RR @ 10, nDCG @ 10, MAP @ 100]
 
 
 def load_sparse_index_from_disk(dataset_name, path_to_root, in_memory=True, wmodel="BM25", index_path=None):
@@ -61,7 +64,7 @@ def find_optimal_alpha(pipeline, ff_int, topics, qrels, alpha_vals=None):
         {ff_int: {"alpha": alpha_vals}},
         topics,
         qrels,
-        "map",
+        "ndcg_cut.10",
         verbose=True,
     )
 
@@ -246,6 +249,36 @@ def get_timeit_dependencies(dataset_name, test_topics, q_encoder, model_name,
         return first_stage_results, semantic_reranker, optimal_alpha
     else:
         return first_stage_results, semantic_reranker
+
+
+def run_pipeline_multiple_datasets_metrics(dataset_names, test_set_names, dev_set_names, q_encoder, model_name,
+                                           path_to_root):
+    pipeline_name = "BM25 >> " + model_name
+    file_path = "../results/ranking_metrics_alpha.csv"
+
+    for i in range(0, len(dataset_names)):
+        try:
+            result, optimal_alpha = default_test_pipeline_name(dataset_names[i], test_set_names[i], q_encoder,
+                                                               eval_metrics,
+                                                               model_name, pipeline_name,
+                                                               path_to_root, dev_set_name=dev_set_names[i], timed=True)
+            result['alpha'] = optimal_alpha
+            result.to_csv(file_path, mode='a', header=not os.path.isfile(file_path), index=False)
+            print(dataset_names[i] + " DONE")
+
+        except Exception as e:
+            # Handles any other exceptions
+            print(f"An error occurred: {e} for dataset {dataset_names[i]}")
+
+    return pd.read_csv(file_path)
+
+
+def getOptimalAlpha(dataset_name, pipeline_name):
+    experiment_name = get_dataset_name(dataset_name) + ": " + pipeline_name
+
+    df = pd.read_csv('../results/ranking_metrics_alpha.csv')
+    optimal_alpha = df[df['name'] == experiment_name]['alpha'].iloc[0]
+    return optimal_alpha
 
 
 def time_fct(func, *args, **kwargs):

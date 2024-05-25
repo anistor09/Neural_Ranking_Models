@@ -27,7 +27,7 @@ class BgeEncoder(Encoder):
         self.device = device
         self.tokenizer_args = tokenizer_args
 
-    def __call__(self, documents: Sequence[str]) -> Tensor:
+    def encode(self, documents: Sequence[str]) -> Tensor:
         # Tokenize sentences
         document_tokens = self.tokenizer(documents, padding=True, truncation=True, return_tensors='pt')
         document_tokens.to(self.device)
@@ -39,3 +39,13 @@ class BgeEncoder(Encoder):
         document_embeddings = torch.nn.functional.normalize(document_embeddings, p=2, dim=1)
 
         return document_embeddings
+
+    def __call__(self, documents: Sequence[str]) -> Tensor:
+        return self.encode(documents)
+
+
+class BgeQueryEncoder(BgeEncoder):
+
+    def __call__(self, queries: Sequence[str]) -> Tensor:
+        instruction = "Represent this sentence for searching relevant passages: "
+        return self.encode([instruction + q for q in queries])
