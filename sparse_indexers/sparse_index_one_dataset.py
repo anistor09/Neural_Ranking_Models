@@ -9,7 +9,7 @@ def index_one(prefix_dataset, dataset_name, max_doc_id_length):
 
     dataset = pt.get_dataset(prefix_dataset + dataset_name)
 
-    index_path = "./sparse_indexes/sparse_index_" + get_dataset_name(dataset_name)
+    index_path = "./sparse_indexes/sparse_index_" + get_dataset_name(prefix_dataset + dataset_name)
     indexer = pt.IterDictIndexer(index_path, meta={'docno': max_doc_id_length})
     indexer.index(dataset.get_corpus_iter(), fields=["text"])
 

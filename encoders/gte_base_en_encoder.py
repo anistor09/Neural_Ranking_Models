@@ -6,7 +6,7 @@ import numpy as np
 import torch
 
 
-class GTEBaseDocumentEncoder(Encoder):
+class GTEBaseEncoder(Encoder):
     """Uses a pre-trained transformer model for encoding. Returns the pooler output."""
 
     def __init__(

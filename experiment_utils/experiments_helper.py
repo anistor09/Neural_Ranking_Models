@@ -16,7 +16,7 @@ eval_metrics = [RR @ 10, nDCG @ 10, MAP @ 100]
 
 def load_sparse_index_from_disk(dataset_name, path_to_root, in_memory=True, wmodel="BM25", index_path=None):
     if index_path is None:
-        index_path = path_to_root + "sparse_indexes/sparse_index_" + get_dataset_name(dataset_name)
+        index_path = path_to_root + "/sparse_indexes/sparse_index_" + get_dataset_name(dataset_name)
 
     # Load index to memory if not specified otherwise
 
@@ -27,8 +27,10 @@ def load_sparse_index_from_disk(dataset_name, path_to_root, in_memory=True, wmod
     return bm25
 
 
-def load_dense_index_from_disk(dataset_name, query_encoder, model_name, mode=Mode.MAXP, in_memory=True):
-    index_path = "../" + "dense_indexes/ffindex_" + get_dataset_name(dataset_name) + "_" + format_name(
+def load_dense_index_from_disk(dataset_name, query_encoder, model_name, path_to_root, model_directory, mode=Mode.MAXP,
+                               in_memory=True):
+    index_path = path_to_root + "/" + model_directory + "/dense_indexes/ffindex_" + get_dataset_name(
+        dataset_name) + "_" + format_name(
         model_name) + ".h5"
 
     # Retrieve from disk
@@ -121,24 +123,27 @@ def get_test_dev_sets(test_set_name, dev_set_name):
 
 
 def default_test_pipeline_name(dataset_name, test_set_name, q_encoder, eval_metrics, model_name, pipeline_name,
-                               path_to_root, dev_set_name=None, timed=False, alpha=0.005, in_memory_sparse=True,
+                               path_to_root, model_directory, dev_set_name=None, timed=False, alpha=0.005,
+                               in_memory_sparse=True,
                                in_memory_dense=True, index_path=None):
     test_topics, test_qrels, dev_topics, dev_qrels = get_test_dev_sets(test_set_name, dev_set_name)
 
     return default_test_pipeline(dataset_name, test_topics, test_qrels, q_encoder,
-                                 eval_metrics, model_name, pipeline_name, path_to_root,
+                                 eval_metrics, model_name, pipeline_name, path_to_root, model_directory,
                                  dev_topics, dev_qrels, timed=timed, alpha=alpha, in_memory_sparse=in_memory_sparse,
                                  in_memory_dense=in_memory_dense,
                                  index_path=index_path)
 
 
 def load_pipeline_dependencies(dataset_name, q_encoder, model_name, pipeline_name,
-                               path_to_root, dev_topics=None, dev_qrels=None, alpha=0.005, in_memory_sparse=True,
+                               path_to_root, model_directory, dev_topics=None, dev_qrels=None, alpha=0.005,
+                               in_memory_sparse=True,
                                in_memory_dense=True, index_path=None):
     # Get sparse retriever and semantic reranker for pipeline creation
 
     sparse_retriever, semantic_reranker, optimal_alpha = get_pipeline_transformers(dataset_name, q_encoder, model_name,
-                                                                                   path_to_root, dev_topics=dev_topics,
+                                                                                   path_to_root, model_directory,
+                                                                                   dev_topics=dev_topics,
                                                                                    dev_qrels=dev_qrels, alpha=alpha,
                                                                                    in_memory_sparse=in_memory_sparse,
                                                                                    in_memory_dense=in_memory_dense,
@@ -151,12 +156,13 @@ def load_pipeline_dependencies(dataset_name, q_encoder, model_name, pipeline_nam
 
 
 def default_test_pipeline(dataset_name, test_topics, test_qrels, q_encoder, eval_metrics, model_name, pipeline_name,
-                          path_to_root, dev_topics=None, dev_qrels=None, timed=False, alpha=0.005,
+                          path_to_root, model_directory, dev_topics=None, dev_qrels=None, timed=False, alpha=0.005,
                           in_memory_sparse=True,
                           in_memory_dense=True, index_path=None):
     default_pipeline, experiment_name, optimal_alpha = load_pipeline_dependencies(dataset_name, q_encoder, model_name,
                                                                                   pipeline_name,
-                                                                                  path_to_root, dev_topics=dev_topics,
+                                                                                  path_to_root, model_directory,
+                                                                                  dev_topics=dev_topics,
                                                                                   dev_qrels=dev_qrels, alpha=alpha,
                                                                                   in_memory_sparse=in_memory_sparse,
                                                                                   in_memory_dense=in_memory_dense,
@@ -193,19 +199,19 @@ def test_first_stage_retrieval(dataset_name, test_topics, test_qrels, eval_metri
 
 
 def get_timeit_dependencies_name(dataset_name, test_set_name, q_encoder, model_name,
-                                 path_to_root, dev_set_name=None, alpha=0.005, in_memory_sparse=True,
+                                 path_to_root, model_directory, dev_set_name=None, alpha=0.005, in_memory_sparse=True,
                                  in_memory_dense=True, index_path=None):
     test_topics, test_qrels, dev_topics, dev_qrels = get_test_dev_sets(test_set_name, dev_set_name)
 
     return get_timeit_dependencies(dataset_name, test_topics, q_encoder
-                                   , model_name, path_to_root,
+                                   , model_name, path_to_root, model_directory,
                                    dev_topics, dev_qrels, alpha=alpha, in_memory_sparse=in_memory_sparse,
                                    in_memory_dense=in_memory_dense,
                                    index_path=index_path)
 
 
 def get_pipeline_transformers(dataset_name, q_encoder, model_name,
-                              path_to_root, dev_topics=None, dev_qrels=None, alpha=0.005,
+                              path_to_root, model_directory, dev_topics=None, dev_qrels=None, alpha=0.005,
                               in_memory_sparse=True,
                               in_memory_dense=True, index_path=None):
     # Spare index
@@ -213,7 +219,8 @@ def get_pipeline_transformers(dataset_name, q_encoder, model_name,
                                             index_path=index_path)
 
     # Dense index
-    dense_index = load_dense_index_from_disk(dataset_name, q_encoder, model_name, in_memory=in_memory_dense)
+    dense_index = load_dense_index_from_disk(dataset_name, q_encoder, model_name, path_to_root, model_directory,
+                                             in_memory=in_memory_dense)
 
     ff_score = FFScore(dense_index)
     # ff_int = FFInterpolate(alpha=alpha)
@@ -234,11 +241,12 @@ def get_pipeline_transformers(dataset_name, q_encoder, model_name,
 
 
 def get_timeit_dependencies(dataset_name, test_topics, q_encoder, model_name,
-                            path_to_root, dev_topics=None, dev_qrels=None, alpha=0.005,
+                            path_to_root, model_directory, dev_topics=None, dev_qrels=None, alpha=0.005,
                             in_memory_sparse=True,
                             in_memory_dense=True, index_path=None):
     sparse_retriever, semantic_reranker, optimal_alpha = get_pipeline_transformers(dataset_name, q_encoder, model_name,
-                                                                                   path_to_root, dev_topics=dev_topics,
+                                                                                   path_to_root, model_directory,
+                                                                                   dev_topics=dev_topics,
                                                                                    dev_qrels=dev_qrels, alpha=alpha,
                                                                                    in_memory_sparse=in_memory_sparse,
                                                                                    in_memory_dense=in_memory_dense,
@@ -252,16 +260,17 @@ def get_timeit_dependencies(dataset_name, test_topics, q_encoder, model_name,
 
 
 def run_pipeline_multiple_datasets_metrics(dataset_names, test_set_names, dev_set_names, q_encoder, model_name,
-                                           path_to_root):
+                                           path_to_root, model_directory):
     pipeline_name = "BM25 >> " + model_name
-    file_path = "../results/ranking_metrics_alpha.csv"
+    file_path = path_to_root + "/" + model_directory + "/results/ranking_metrics_alpha.csv"
 
     for i in range(0, len(dataset_names)):
         try:
             result, optimal_alpha = default_test_pipeline_name(dataset_names[i], test_set_names[i], q_encoder,
                                                                eval_metrics,
                                                                model_name, pipeline_name,
-                                                               path_to_root, dev_set_name=dev_set_names[i], timed=True)
+                                                               path_to_root, model_directory,
+                                                               dev_set_name=dev_set_names[i], timed=True)
             result['alpha'] = optimal_alpha
             result.to_csv(file_path, mode='a', header=not os.path.isfile(file_path), index=False)
             print(dataset_names[i] + " DONE")
@@ -269,6 +278,10 @@ def run_pipeline_multiple_datasets_metrics(dataset_names, test_set_names, dev_se
         except Exception as e:
             # Handles any other exceptions
             print(f"An error occurred: {e} for dataset {dataset_names[i]}")
+
+    duplicate_dataframe = pd.read_csv(file_path)
+    unique_dataframe = duplicate_dataframe.groupby('name').tail(1)
+    unique_dataframe.to_csv(file_path, index=False)
 
     return pd.read_csv(file_path)
 

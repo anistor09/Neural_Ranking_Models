@@ -1,6 +1,6 @@
 from experiment_utils.experiments_helper import default_test_pipeline_name
 from pyterrier.measures import RR, nDCG, MAP
-from encoders.gte_base_en_encoder import GTEBaseDocumentEncoder
+from encoders.gte_base_en_encoder import GTEBaseEncoder
 from memory_profiler import profile
 
 
@@ -12,7 +12,7 @@ def runtest():
 
     eval_metrics = [RR @ 10, nDCG @ 10, MAP @ 100]
 
-    q_encoder = GTEBaseDocumentEncoder("Alibaba-NLP/gte-base-en-v1.5")
+    q_encoder = GTEBaseEncoder("Alibaba-NLP/gte-base-en-v1.5")
     model_name = "gte-base-en-v1.5"
     dataset_name = "irds:beir/arguana"
     pipeline_name = "BM25 >> " + model_name

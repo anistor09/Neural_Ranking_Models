@@ -1,7 +1,8 @@
-from sparse_index_one_dataset import index_one
+from sparse_indexers.sparse_index_one_dataset import index_one
 
-datasets = ["nfcorpus", "cqadupstack/english", "arguana", "scidocs", "scifact", "fiqa"]
-lengths = [8, 6, 47, 40, 9, 6]
+datasets = ["quora", "hotpotqa", "fever"]
+lengths = [6, 8, 221]
+
 prefix_dataset = "irds:beir/"
 
 
