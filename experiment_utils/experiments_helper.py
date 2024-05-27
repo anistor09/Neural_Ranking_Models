@@ -265,19 +265,19 @@ def run_pipeline_multiple_datasets_metrics(dataset_names, test_set_names, dev_se
     file_path = path_to_root + "/" + model_directory + "/results/ranking_metrics_alpha.csv"
 
     for i in range(0, len(dataset_names)):
-        try:
-            result, optimal_alpha = default_test_pipeline_name(dataset_names[i], test_set_names[i], q_encoder,
-                                                               eval_metrics,
-                                                               model_name, pipeline_name,
-                                                               path_to_root, model_directory,
-                                                               dev_set_name=dev_set_names[i], timed=True)
-            result['alpha'] = optimal_alpha
-            result.to_csv(file_path, mode='a', header=not os.path.isfile(file_path), index=False)
-            print(dataset_names[i] + " DONE")
+        # try:
+        result, optimal_alpha = default_test_pipeline_name(dataset_names[i], test_set_names[i], q_encoder,
+                                                           eval_metrics,
+                                                           model_name, pipeline_name,
+                                                           path_to_root, model_directory,
+                                                           dev_set_name=dev_set_names[i], timed=True)
+        result['alpha'] = optimal_alpha
+        result.to_csv(file_path, mode='a', header=not os.path.isfile(file_path), index=False)
+        print(dataset_names[i] + " DONE")
 
-        except Exception as e:
-            # Handles any other exceptions
-            print(f"An error occurred: {e} for dataset {dataset_names[i]}")
+    # except Exception as e:
+    #     # Handles any other exceptions
+    #     print(f"An error occurred: {e} for dataset {dataset_names[i]}")
 
     duplicate_dataframe = pd.read_csv(file_path)
     unique_dataframe = duplicate_dataframe.groupby('name').tail(1)
@@ -288,8 +288,8 @@ def run_pipeline_multiple_datasets_metrics(dataset_names, test_set_names, dev_se
 
 def getOptimalAlpha(dataset_name, pipeline_name):
     experiment_name = get_dataset_name(dataset_name) + ": " + pipeline_name
-
-    df = pd.read_csv('../results/ranking_metrics_alpha.csv')
+    path_to_root = os.path.abspath(os.getcwd())
+    df = pd.read_csv(path_to_root + '/../results/ranking_metrics_alpha.csv')
     optimal_alpha = df[df['name'] == experiment_name]['alpha'].iloc[0]
     return optimal_alpha
 

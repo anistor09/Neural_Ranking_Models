@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name="snowflake_multiple"
-#SBATCH --time=24:00:00
+#SBATCH --time=09:00:00
 #SBATCH --partition=gpu-a100
 #SBATCH --gpus-per-task=1
 #SBATCH --ntasks=1
@@ -26,5 +26,5 @@ python -m pip install --user python-terrier==0.10.0 fast-forward-indexes==0.2.0 
 
 
 # Run the experiment
-srun python -m snowflake.dense_indexers.dense_index_multiple_datasets > snowflake_status_multiple.txt
+srun python -m snowflake.dense_indexers.dense_index_one_dataset > snowflake_status_one_dataset.txt
 

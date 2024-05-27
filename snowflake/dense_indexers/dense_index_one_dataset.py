@@ -2,7 +2,7 @@ import torch
 from fast_forward import Mode
 from general_dense_indexers.dense_index_one_dataset import index_collection
 from encoders.snowflake_arctic_embed_m import SnowFlakeDocumentEncoder, SnowFlakeQueryEncoder
-
+from func_timeout import func_timeout
 
 def index_snowflake_collection(dataset_name, max_id_length, directory, model_name, dim=768):
     q_encoder = SnowFlakeQueryEncoder("Snowflake/" + model_name)
@@ -25,10 +25,16 @@ def index_snowflake_xs_collection(dataset_name, max_id_length, directory):
 
 
 def main():
-    dataset_name = "irds:beir/nfcorpus"
-    max_id_length = 8
+    dataset_name = "irds:msmarco-passage"
+    max_id_length = 7
     directory = "snowflake"
-    index_snowflake_xs_collection(dataset_name, max_id_length, directory)
+
+    try:
+        func_timeout(9 * 3600 - 120, index_snowflake_xs_collection, args =(dataset_name, max_id_length, directory))
+    except Exception as e:
+        # Handles any other exceptions
+        print(f"An error occurred: {e}")
+
 
 
 if __name__ == '__main__':
