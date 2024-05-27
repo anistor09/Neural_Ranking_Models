@@ -1,0 +1,2 @@
+dataset,pipeline_name,mean_time_per_query,timeit_details
+fiqa_test,BM25 >> bge-base-en-v1.5,17.3505,"7 runs, 1 loop each)"
