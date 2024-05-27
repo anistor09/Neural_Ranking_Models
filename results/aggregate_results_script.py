@@ -3,9 +3,9 @@ import pandas as pd
 
 # Usage
 path_to_root = os.path.abspath(os.getcwd()) + "/../"
-output_file = 'aggreagated_metrics_results.csv'
+output_file = 'aggreagated_latency_results.csv'
 directories = ["bge", "gte_base_en_v1_5", "snowflake", "tct_colbert"]
-res_path = "/results/ranking_metrics_alpha.csv"
+res_path = "/results/latency_data.csv"
 
 
 def aggregate_csv_files():
