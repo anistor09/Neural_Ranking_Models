@@ -10,7 +10,6 @@ def docs_iter(dataset):
         yield {"doc_id": d["docno"].encode("utf-8"), "text": d["text"]}
 
 
-
 def format_name(text):
     return re.sub(r'[:/.-]', '_', text)
 

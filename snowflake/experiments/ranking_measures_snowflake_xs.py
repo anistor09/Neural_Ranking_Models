@@ -1,11 +1,11 @@
-from experiment_utils.evaluator_helper import get_ranking_performance
+from experiment_utils.evaluator_helper_2 import get_ranking_performance
 from encoders.snowflake_arctic_embed_m import SnowFlakeQueryEncoder
 from func_timeout import func_timeout
 
 
 def main():
     package = "Snowflake/"
-    model_name = "snowflake-arctic-embed-m"
+    model_name = "snowflake-arctic-embed-xs"
     q_encoder = SnowFlakeQueryEncoder(package + model_name)
     project_directory = "snowflake"
     func_timeout(5 * 3600 - 120, get_ranking_performance, args=(q_encoder, project_directory, model_name))

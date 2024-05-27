@@ -330,16 +330,16 @@ def store_latency(mean_time_per_query, dataset, pipeline_name, timeit_details):
         'timeit_details': [timeit_details]
     }
     new_data_df = pd.DataFrame(data)
-
-    if os.path.isfile(file_path):
-
-        df = pd.read_csv(file_path)
-        df = df.append(new_data_df, ignore_index=True)
-    else:
-
-        df = new_data_df
-
-    df.to_csv(file_path, index=False)
+    #
+    # if os.path.isfile(file_path):
+    #
+    #     df = pd.read_csv(file_path)
+    #     df = df.append(new_data_df, ignore_index=True)
+    # else:
+    #
+    #     df = new_data_df
+    new_data_df.to_csv(file_path, mode='a', header=not os.path.isfile(file_path), index=False)
+    # df.to_csv(file_path, index=False)
 
 
 def time_fct_print_results(func, *args, **kwargs):
