@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name="snowflake_multiple_small"
-#SBATCH --time=24:00:00
+#SBATCH --time=23:50:00
 #SBATCH --partition=gpu-a100
 #SBATCH --gpus-per-task=1
 #SBATCH --ntasks=1
