@@ -1,0 +1,7 @@
+dataset,pipeline_name,mean_time_per_query,timeit_details
+fiqa_test,BM25 >> gte-base-en-v1.5,25.6741,"7 runs, 1 loop each)"
+nfcorpus_test,BM25 >> gte-base-en-v1.5,0.5975,"7 runs, 1 loop each)"
+scifact_test,BM25 >> gte-base-en-v1.5,64.3068,"7 runs, 1 loop each)"
+fiqa_test,BM25 >> gte-base-en-v1.5,17.4678,"7 runs, 1 loop each)"
+nfcorpus_test,BM25 >> gte-base-en-v1.5,0.4467,"7 runs, 1 loop each)"
+scifact_test,BM25 >> gte-base-en-v1.5,47.7876,"7 runs, 1 loop each)"
