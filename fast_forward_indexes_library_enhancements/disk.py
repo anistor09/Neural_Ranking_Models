@@ -126,8 +126,13 @@ class OnDiskIndex(Index):
                 # we can only add vectors of the same type (doc IDs, passage IDs, or both) in one batch
                 has_doc_id, has_psg_id, has_both_ids = [], [], []
                 vecs = fp["vectors"][i_low:i_up]
-                doc_ids = fp["doc_ids"].asstr()[i_low:i_up]
-                psg_ids = fp["psg_ids"].asstr()[i_low:i_up]
+                try:
+                    doc_ids = fp["doc_ids"].asstr()[i_low:i_up]
+                    psg_ids = fp["psg_ids"].asstr()[i_low:i_up]
+                except Exception as e:
+                    doc_ids = fp["doc_ids"].asstr(encoding="utf-8")[i_low:i_up]
+                    psg_ids = fp["psg_ids"].asstr(encoding="utf-8")[i_low:i_up]
+
                 for j, (doc_id, psg_id) in enumerate(zip(doc_ids, psg_ids)):
                     if len(doc_id) == 0:
                         has_psg_id.append(j)
