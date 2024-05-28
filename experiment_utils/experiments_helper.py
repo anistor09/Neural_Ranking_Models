@@ -313,7 +313,7 @@ def time_fct(func, *args, **kwargs):
 def latency_per_query(captured_timeit_output_stdout, test_set_name, pipeline_name):
     mean_time_search = re.search(r"(\d+\.\d+) s", captured_timeit_output_stdout)
     mean_time = float(mean_time_search.group(1))
-    len_qrels = len(pt.get_dataset(test_set_name).get_qrels())
+    len_qrels = len(pt.get_dataset(test_set_name).get_topics())
     mean_time_per_query = mean_time / len_qrels
 
     # Transform in ms
