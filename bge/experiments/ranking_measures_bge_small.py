@@ -5,23 +5,22 @@ from encoders.bge_base_en import BgeQueryEncoder
 
 def get_datasets():
     prefix = "irds:"
-
-    dataset_names = [
-        "msmarco-passage", "beir/fever"
-    ]
-
+    dataset_names = ["beir/scifact", "beir/nfcorpus", "beir/fiqa", "beir/dbpedia-entity", "beir/quora", "beir/hotpotqa",
+                     "beir/fever",
+                     "msmarco-passage"]
     n = len(dataset_names)
     devset_suffixes = ["/dev"] * n
 
     test_suffixes = ["/test"] * n
-    # devset_suffixes[0] = "/train"
-    test_suffixes[0] = "/trec-dl-2019"
+    devset_suffixes[0] = "/train"
+    test_suffixes[n - 1] = "/trec-dl-2019"
 
     return merge_dataset_names(prefix, dataset_names, devset_suffixes, test_suffixes)
 
 
-def run_metrics_bge(model_name="bge-base-en-v1.5"):
+def main():
     package = "BAAI/"
+    model_name = "bge-small-en-v1.5"
     q_encoder = BgeQueryEncoder(package + model_name)
     project_directory = "bge"
 
@@ -29,4 +28,4 @@ def run_metrics_bge(model_name="bge-base-en-v1.5"):
 
 
 if __name__ == '__main__':
-    run_metrics_bge()
+    main()

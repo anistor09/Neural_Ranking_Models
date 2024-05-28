@@ -1,5 +1,6 @@
 import pyterrier as pt
-from fast_forward import OnDiskIndex, Mode
+# from fast_forward import OnDiskIndex, Mode
+from fast_forward import Mode
 from pathlib import Path
 from fast_forward.util.pyterrier import FFScore
 import time
@@ -8,8 +9,10 @@ from pyterrier.measures import RR, nDCG, MAP
 import os
 import pandas as pd
 from fast_forward_indexes_library_enhancements.pipeline_transformers import FFInterpolateNormalized
+from fast_forward_indexes_library_enhancements.disk import OnDiskIndex
 from general_dense_indexers.dense_index_one_dataset import get_dataset_name, format_name
 import re
+import traceback
 
 SEED = 42
 eval_metrics = [RR @ 10, nDCG @ 10, MAP @ 100]
@@ -266,19 +269,21 @@ def run_pipeline_multiple_datasets_metrics(dataset_names, test_set_names, dev_se
     file_path = path_to_root + "/" + model_directory + "/results/ranking_metrics_alpha.csv"
 
     for i in range(0, len(dataset_names)):
-        # try:
-        result, optimal_alpha = default_test_pipeline_name(dataset_names[i], test_set_names[i], q_encoder,
-                                                           eval_metrics,
-                                                           model_name, pipeline_name,
-                                                           path_to_root, model_directory,
-                                                           dev_set_name=dev_set_names[i], timed=True)
-        result['alpha'] = optimal_alpha
-        result.to_csv(file_path, mode='a', header=not os.path.isfile(file_path), index=False)
-        print(dataset_names[i] + " DONE")
+        try:
+            result, optimal_alpha = default_test_pipeline_name(dataset_names[i], test_set_names[i], q_encoder,
+                                                               eval_metrics,
+                                                               model_name, pipeline_name,
+                                                               path_to_root, model_directory,
+                                                               dev_set_name=dev_set_names[i], timed=True)
+            result['alpha'] = optimal_alpha
+            result.to_csv(file_path, mode='a', header=not os.path.isfile(file_path), index=False)
+            print(dataset_names[i] + " DONE")
 
-    # except Exception as e:
-    #     # Handles any other exceptions
-    #     print(f"An error occurred: {e} for dataset {dataset_names[i]}")
+        except Exception as e:
+            # Handles any other exceptions
+            print(dataset_names[i] + " FAILED")
+            print(f"An error occurred: {e} for dataset {dataset_names[i]}")
+            print(traceback.print_exc())
 
     duplicate_dataframe = pd.read_csv(file_path)
     unique_dataframe = duplicate_dataframe.groupby('name').tail(1)
@@ -289,6 +294,7 @@ def run_pipeline_multiple_datasets_metrics(dataset_names, test_set_names, dev_se
 
 def getOptimalAlpha(dataset_name, pipeline_name):
     experiment_name = get_dataset_name(dataset_name) + ": " + pipeline_name
+    print(experiment_name)
     path_to_root = os.path.abspath(os.getcwd())
     df = pd.read_csv(path_to_root + '/../results/ranking_metrics_alpha.csv')
     optimal_alpha = df[df['name'] == experiment_name]['alpha'].iloc[0]

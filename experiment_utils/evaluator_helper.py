@@ -4,20 +4,11 @@ from experiment_utils.experiments_helper import run_pipeline_multiple_datasets_m
 import os
 
 
-def get_ranking_performance(q_encoder, project_directory, model_name):
-    if not pt.started():
-        pt.init()
-
-    dataset_names, dev_set_names, test_set_names = get_datasets()
-
-    path_to_root = os.path.abspath(os.getcwd())
-
-    res_metrics = run_pipeline_multiple_datasets_metrics(dataset_names,
-                                                         test_set_names,
-                                                         dev_set_names, q_encoder,
-                                                         model_name,
-                                                         path_to_root, project_directory)
-    print(res_metrics)
+def merge_dataset_names(prefix, dataset_names, devset_suffixes, test_suffixes):
+    test_set_names = [prefix + dataset for dataset in [a + b for a, b in zip(dataset_names, test_suffixes)]]
+    dev_set_names = [prefix + dataset for dataset in [a + b for a, b in zip(dataset_names, devset_suffixes)]]
+    dataset_names = [prefix + dataset for dataset in dataset_names]
+    return dataset_names, dev_set_names, test_set_names
 
 
 def get_datasets():
@@ -28,20 +19,33 @@ def get_datasets():
     #                  "msmarco-passage"]
 
     dataset_names = [
-        "msmarco-passage"
+        "beir/fever"
     ]
 
     n = len(dataset_names)
-    devset_sufixes = ["/dev"] * n
+    devset_suffixes = ["/dev"] * n
 
     test_suffixes = ["/test"] * n
-    # devset_sufixes[0] = "/train"
-    test_suffixes[n - 1] = "/trec-dl-2019"
+    # devset_suffixes[0] = "/train"
+    # test_suffixes[n - 1] = "/trec-dl-2019"
 
-    test_set_names = [prefix + dataset for dataset in [a + b for a, b in zip(dataset_names, test_suffixes)]]
-    dev_set_names = [prefix + dataset for dataset in [a + b for a, b in zip(dataset_names, devset_sufixes)]]
-    dataset_names = [prefix + dataset for dataset in dataset_names]
-    return dataset_names, dev_set_names, test_set_names
+    return merge_dataset_names(prefix, dataset_names, devset_suffixes, test_suffixes)
+
+
+def get_ranking_performance(q_encoder, project_directory, model_name, get_datasets_func=get_datasets):
+    if not pt.started():
+        pt.init()
+
+    dataset_names, dev_set_names, test_set_names = get_datasets_func()
+
+    path_to_root = os.path.abspath(os.getcwd())
+
+    res_metrics = run_pipeline_multiple_datasets_metrics(dataset_names,
+                                                         test_set_names,
+                                                         dev_set_names, q_encoder,
+                                                         model_name,
+                                                         path_to_root, project_directory)
+    print(res_metrics)
 
 
 def main():

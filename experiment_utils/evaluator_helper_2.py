@@ -23,15 +23,17 @@ def get_ranking_performance(q_encoder, project_directory, model_name):
 def get_datasets():
     prefix = "irds:"
 
-    dataset_names = ["beir/scifact", "beir/nfcorpus", "beir/fiqa", "beir/dbpedia-entity", "beir/quora", "beir/hotpotqa",
-                     "msmarco-passage"]
+    # dataset_names = ["beir/scifact", "beir/nfcorpus", "beir/fiqa", "beir/dbpedia-entity", "beir/quora", "beir/hotpotqa",
+    #                  "msmarco-passage"]
+
+    dataset_names = ["beir/dbpedia-entity"]
 
     n = len(dataset_names)
     devset_sufixes = ["/dev"] * n
 
     test_suffixes = ["/test"] * n
-    devset_sufixes[0] = "/train"
-    test_suffixes[n - 1] = "/trec-dl-2019"
+    # devset_sufixes[0] = "/train"
+    # test_suffixes[n - 1] = "/trec-dl-2019"
 
     test_set_names = [prefix + dataset for dataset in [a + b for a, b in zip(dataset_names, test_suffixes)]]
     dev_set_names = [prefix + dataset for dataset in [a + b for a, b in zip(dataset_names, devset_sufixes)]]
