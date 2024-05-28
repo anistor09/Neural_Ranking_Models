@@ -16,6 +16,7 @@ import traceback
 
 SEED = 42
 eval_metrics = [RR @ 10, nDCG @ 10, MAP @ 100]
+eval_metrics_general = [RR @ 10, nDCG @ 10, MAP @ 100]
 eval_metrics_msmarco = [RR(rel=2) @ 10, nDCG @ 10, MAP(rel=2) @ 100]
 
 
@@ -272,9 +273,16 @@ def run_pipeline_multiple_datasets_metrics(dataset_names, test_set_names, dev_se
                                            path_to_root, model_directory):
     pipeline_name = "BM25 >> " + model_name
     file_path = path_to_root + "/" + model_directory + "/results/ranking_metrics_alpha.csv"
+    global eval_metrics
 
     for i in range(0, len(dataset_names)):
         try:
+            if "msmarco-passage" in dataset_names[i]:
+                eval_metrics = eval_metrics_msmarco
+            else:
+                eval_metrics = eval_metrics_general
+
+            print(eval_metrics)
             result, optimal_alpha = default_test_pipeline_name(dataset_names[i], test_set_names[i], q_encoder,
                                                                eval_metrics,
                                                                model_name, pipeline_name,
