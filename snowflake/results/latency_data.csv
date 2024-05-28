@@ -1,3 +1,0 @@
-dataset,pipeline_name,mean_time_per_query,timeit_details
-fiqa_test,BM25 >> snowflake-arctic-embed-m,2.0399,"7 runs, 1 loop each)"
-nfcorpus_test,BM25 >> snowflake-arctic-embed-m,0.5375,"7 runs, 1 loop each)"
