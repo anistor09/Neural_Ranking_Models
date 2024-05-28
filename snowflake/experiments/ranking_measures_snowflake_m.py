@@ -6,9 +6,10 @@ from func_timeout import func_timeout
 def get_datasets():
     prefix = "irds:"
 
-    dataset_names = [
-        "beir/fever", "msmarco-passage"
-    ]
+    dataset_names = ["beir/dbpedia-entity",
+                     "beir/fever",
+                     "beir/hotpotqa",
+                     "msmarco-passage"]
 
     n = len(dataset_names)
     devset_suffixes = ["/dev"] * n
@@ -25,7 +26,8 @@ def main():
     model_name = "snowflake-arctic-embed-m"
     q_encoder = SnowFlakeQueryEncoder(package + model_name)
     project_directory = "snowflake"
-    func_timeout(5 * 3600 - 120, get_ranking_performance, args=(q_encoder, project_directory, model_name, get_datasets))
+    func_timeout(13 * 3600 - 120, get_ranking_performance,
+                 args=(q_encoder, project_directory, model_name, get_datasets))
 
 
 if __name__ == '__main__':

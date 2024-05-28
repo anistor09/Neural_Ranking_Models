@@ -16,6 +16,7 @@ import traceback
 
 SEED = 42
 eval_metrics = [RR @ 10, nDCG @ 10, MAP @ 100]
+eval_metrics_msmarco = [RR(rel=2) @ 10, nDCG @ 10, MAP(rel=2) @ 100]
 
 
 def load_sparse_index_from_disk(dataset_name, path_to_root, in_memory=True, wmodel="BM25", index_path=None):
@@ -123,6 +124,10 @@ def get_test_dev_sets(test_set_name, dev_set_name):
         dev_set = pt.get_dataset(dev_set_name)
         dev_topics = dev_set.get_topics()
         dev_qrels = dev_set.get_qrels()
+
+        if "msmarco-passage" in dev_set_name:
+            dev_topics = dev_topics.sample(frac=0.3, random_state=SEED)
+
     return test_set.get_topics(), test_set.get_qrels(), dev_topics, dev_qrels
 
 
@@ -294,7 +299,6 @@ def run_pipeline_multiple_datasets_metrics(dataset_names, test_set_names, dev_se
 
 def getOptimalAlpha(dataset_name, pipeline_name):
     experiment_name = get_dataset_name(dataset_name) + ": " + pipeline_name
-    print(experiment_name)
     path_to_root = os.path.abspath(os.getcwd())
     df = pd.read_csv(path_to_root + '/../results/ranking_metrics_alpha.csv')
     optimal_alpha = df[df['name'] == experiment_name]['alpha'].iloc[0]

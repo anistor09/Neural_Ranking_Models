@@ -7,7 +7,7 @@ def get_datasets():
     prefix = "irds:"
 
     dataset_names = [
-        "beir/fever", "msmarco-passage"
+        "beir/dbpedia-entity", "beir/fever", "msmarco-passage"
     ]
 
     n = len(dataset_names)
@@ -25,7 +25,7 @@ def main():
     model_name = "gte-base-en-v1.5"
     q_encoder = GTEBaseEncoder(package + model_name)
     project_directory = "gte_base_en_v1_5"
-    func_timeout(5 * 3600 - 120, get_ranking_performance, args=(q_encoder, project_directory, model_name, get_datasets))
+    func_timeout(10 * 3600 - 120, get_ranking_performance, args=(q_encoder, project_directory, model_name, get_datasets))
 
 
 if __name__ == '__main__':

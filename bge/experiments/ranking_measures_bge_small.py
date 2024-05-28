@@ -24,7 +24,7 @@ def main():
     q_encoder = BgeQueryEncoder(package + model_name)
     project_directory = "bge"
 
-    func_timeout(7 * 3600 - 120, get_ranking_performance, args=(q_encoder, project_directory, model_name, get_datasets))
+    func_timeout(13 * 3600 - 120, get_ranking_performance, args=(q_encoder, project_directory, model_name, get_datasets))
 
 
 if __name__ == '__main__':
