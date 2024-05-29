@@ -8,7 +8,7 @@ from fast_forward.util.pyterrier import FFInterpolate
 from pyterrier.measures import RR, nDCG, MAP
 import os
 import pandas as pd
-from fast_forward_indexes_library_enhancements.pipeline_transformers import FFInterpolateNormalized
+from fast_forward_indexes_library_enhancements.pipeline_transformers import FFInterpolateNormalized, EncodeUTF
 from fast_forward_indexes_library_enhancements.disk import OnDiskIndex
 from general_dense_indexers.dense_index_one_dataset import get_dataset_name, format_name
 import re
@@ -160,7 +160,11 @@ def load_pipeline_dependencies(dataset_name, q_encoder, model_name, pipeline_nam
                                                                                    index_path=index_path)
 
     experiment_name = get_dataset_name(dataset_name) + ": " + pipeline_name
-    default_pipeline = sparse_retriever % 1000 >> semantic_reranker
+    if 'dbpedia' in dataset_name or 'fever' in dataset_name:
+        encode_utf = EncodeUTF()
+        default_pipeline = sparse_retriever % 1000 >> encode_utf >> semantic_reranker
+    else:
+        default_pipeline = sparse_retriever % 1000 >> semantic_reranker
 
     return default_pipeline, experiment_name, optimal_alpha
 
@@ -239,7 +243,12 @@ def get_pipeline_transformers(dataset_name, q_encoder, model_name,
     # If devset is present run alpha optimization
     if dev_topics is not None:
         # Pipeline for finding optimal alpha
-        pipeline_find_alpha = retriever % 100 >> ff_score >> ff_int
+        if 'dbpedia' in dataset_name or 'fever' in dataset_name:
+            encode_utf = EncodeUTF()
+            pipeline_find_alpha = retriever % 100 >> encode_utf >> ff_score >> ff_int
+        else:
+            pipeline_find_alpha = retriever % 100 >> ff_score >> ff_int
+
         find_optimal_alpha(pipeline_find_alpha, ff_int, dev_topics, dev_qrels)
 
     semantic_ranker = ff_score >> ff_int

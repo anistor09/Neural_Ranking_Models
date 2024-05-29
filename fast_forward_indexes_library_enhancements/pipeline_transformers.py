@@ -1,8 +1,24 @@
 import pandas as pd
 import pyterrier as pt
+import ast
 
-from fast_forward.index import Index
-from fast_forward.ranking import Ranking
+
+class EncodeUTF(pt.Transformer):
+    """PyTerrier transformer that interpolates scores computed by `FFScore`."""
+
+    def transform(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Interpolate the scores for all query-document pairs in the data frame as
+        `alpha * score_0 + (1 - alpha) * score`.
+
+        Args:
+            df (pd.DataFrame): The PyTerrier data frame.
+
+        Returns:
+            pd.DataFrame: A new data frame with the interpolated scores.
+        """
+
+        df["docno"] = df['docno'].apply(lambda x: ast.literal_eval(x).decode("utf-8"))
+        return df
 
 
 class FFInterpolateNormalized(pt.Transformer):
