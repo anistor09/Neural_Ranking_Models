@@ -24,7 +24,7 @@ def main():
     model_name = "tct_colbert_msmarco"
     q_encoder = TCTColBERTQueryEncoder("castorini/tct_colbert-msmarco")
     project_directory = "tct_colbert"
-    func_timeout(10 * 3600 - 120, get_ranking_performance,
+    func_timeout(9 * 3600 - 120, get_ranking_performance,
                  args=(q_encoder, project_directory, model_name, get_datasets))
 
 

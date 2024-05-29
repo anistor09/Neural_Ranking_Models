@@ -25,11 +25,11 @@ def index_bge_small_collection(dataset_name, max_id_length, directory):
 
 
 def main():
-    dataset_name = "irds:beir/fever"
-    max_id_length = 221
+    dataset_name = "irds:msmarco-passage"
+    max_id_length = 7
     directory = "bge"
     try:
-        index_bge_base_collection(dataset_name, max_id_length, directory)
+        index_bge_small_collection(dataset_name, max_id_length, directory)
 
     except Exception as e:
         # Handles any other exceptions

@@ -1,4 +1,4 @@
-from bge.dense_indexers.dense_index_one_dataset_2 import index_bge_small_collection, index_bge_base_collection
+from bge.dense_indexers.dense_index_one_dataset import index_bge_small_collection, index_bge_base_collection
 from func_timeout import func_timeout
 
 beir_datasets = ["dbpedia-entity", "fever", "fiqa", "hotpotqa", "nfcorpus", "quora", "scifact"]

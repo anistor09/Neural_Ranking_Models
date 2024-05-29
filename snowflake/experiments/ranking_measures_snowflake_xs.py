@@ -24,7 +24,7 @@ def main():
     model_name = "snowflake-arctic-embed-xs"
     q_encoder = SnowFlakeQueryEncoder(package + model_name)
     project_directory = "snowflake"
-    func_timeout(10 * 3600 - 120, get_ranking_performance, args=(q_encoder, project_directory, model_name, get_datasets))
+    func_timeout(7 * 3600 - 120, get_ranking_performance, args=(q_encoder, project_directory, model_name, get_datasets))
 
 
 if __name__ == '__main__':
