@@ -50,31 +50,48 @@ def load_dense_index_from_disk(dataset_name, query_encoder, model_name, path_to_
         return ff_index
 
 
-def find_optimal_alpha_name(pipeline, ff_int, dev_set_name, alpha_vals=None):
+def find_optimal_alpha(pipeline_no_interpolation, topics, qrels, dataset_name, model_name, path_to_root,
+                       model_directory, alpha_vals=None):
+    file_path = path_to_root + "/" + model_directory + "/results/alpha_search_dev.csv"
+
     if alpha_vals is None:
-        # alpha_vals = [0.025, 0.05, 0.1, 0.5, 0.9]
-        # alpha_vals = [0.01, 0.001, 0.005, 0.02, 0.1, 0.05, 0.2]
-        alpha_vals = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.6, 0.8, 0.9]
+        alpha_vals = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
 
-    dev_set = pt.get_dataset(dev_set_name)
-    find_optimal_alpha(pipeline, ff_int, dev_set.get_topics(),
-                       dev_set.get_qrels(), alpha_vals)
+    experiment_name = get_dataset_name(dataset_name) + ": " + "BM25 >> " + model_name
+    maxi = 0
+    max_alpha = 0.1
 
+    print("START ALPHA TUNING FOR " + model_name + " on " + dataset_name)
+    start_tun = time.time()
 
-def find_optimal_alpha(pipeline, ff_int, topics, qrels, alpha_vals=None):
-    if alpha_vals is None:
-        # alpha_vals = [0.025, 0.05, 0.1, 0.5, 0.9]
-        # alpha_vals = [0.01, 0.001, 0.005, 0.02, 0.1, 0.05, 0.2]
-        alpha_vals = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.6, 0.8, 0.9]
+    for alpha in alpha_vals:
+        print("START " + str(alpha))
+        start = time.time()
 
-    pt.GridSearch(
-        pipeline,
-        {ff_int: {"alpha": alpha_vals}},
-        topics,
-        qrels,
-        "ndcg_cut.10",
-        verbose=True,
-    )
+        ff_int = FFInterpolateNormalized(alpha=alpha)
+        pipeline = pipeline_no_interpolation >> ff_int
+        result = run_single_experiment(pipeline, topics, qrels, eval_metrics, experiment_name)
+
+        result['alpha'] = alpha
+        result.to_csv(file_path, mode='a', header=not os.path.isfile(file_path), index=False)
+
+        if result["nDCG@10"].iloc[0] > maxi:
+            maxi = result["nDCG@10"].iloc[0]
+            max_alpha = alpha
+
+        end = time.time()
+        lantecy = round(((end - start) / 60), 2)
+        print("END " + str(alpha) + " in " + str(lantecy) + "mins")
+
+    duplicate_dataframe = pd.read_csv(file_path)
+    unique_dataframe = duplicate_dataframe.groupby('name').tail(9)
+    unique_dataframe.to_csv(file_path, index=False)
+
+    end_tun = time.time()
+    lantecy = round(((end_tun - start_tun) / 60), 2)
+    print("TUNING TOOK " + str(lantecy) + " minutes")
+
+    return max_alpha
 
 
 def run_single_experiment_name(pipeline, dataset_name, evaluation_metrics, name, timed=False):
@@ -237,20 +254,21 @@ def get_pipeline_transformers(dataset_name, q_encoder, model_name,
                                              in_memory=in_memory_dense)
 
     ff_score = FFScore(dense_index)
-    # ff_int = FFInterpolate(alpha=alpha)
-    ff_int = FFInterpolateNormalized(alpha=alpha)
+    optimal_alpha = alpha
 
     # If devset is present run alpha optimization
     if dev_topics is not None:
         # Pipeline for finding optimal alpha
         if 'dbpedia' in dataset_name or 'fever' in dataset_name:
             encode_utf = EncodeUTF()
-            pipeline_find_alpha = retriever % 100 >> encode_utf >> ff_score >> ff_int
+            pipeline_find_alpha = retriever % 100 >> encode_utf >> ff_score
         else:
-            pipeline_find_alpha = retriever % 100 >> ff_score >> ff_int
+            pipeline_find_alpha = retriever % 100 >> ff_score
 
-        find_optimal_alpha(pipeline_find_alpha, ff_int, dev_topics, dev_qrels)
+        optimal_alpha = find_optimal_alpha(pipeline_find_alpha, dev_topics, dev_qrels, dataset_name, model_name,
+                                           path_to_root, model_directory)
 
+    ff_int = FFInterpolateNormalized(alpha=optimal_alpha)
     semantic_ranker = ff_score >> ff_int
 
     if dev_topics is not None:
@@ -308,6 +326,10 @@ def run_pipeline_multiple_datasets_metrics(dataset_names, test_set_names, dev_se
             print(traceback.print_exc())
 
     duplicate_dataframe = pd.read_csv(file_path)
+
+    print("BEFORE REMOVING DUPLICATES")
+    print(duplicate_dataframe)
+
     unique_dataframe = duplicate_dataframe.groupby('name').tail(1)
     unique_dataframe.to_csv(file_path, index=False)
 
