@@ -7,7 +7,7 @@ def get_datasets():
     prefix = "irds:"
 
     dataset_names = [
-        "beir/dbpedia-entity", "beir/fever"
+        "beir/dbpedia-entity", "beir/fever", "msmarco-passage"
     ]
 
     n = len(dataset_names)
@@ -15,7 +15,7 @@ def get_datasets():
 
     test_suffixes = ["/test"] * n
     # devset_suffixes[0] = "/train"
-    # test_suffixes[n - 1] = "/trec-dl-2019"
+    test_suffixes[n - 1] = "/trec-dl-2019"
 
     return merge_dataset_names(prefix, dataset_names, devset_suffixes, test_suffixes)
 
@@ -25,7 +25,7 @@ def run_metrics_bge(model_name="bge-base-en-v1.5"):
     q_encoder = BgeQueryEncoder(package + model_name)
     project_directory = "bge"
 
-    func_timeout(3 * 3600 - 120, get_ranking_performance,
+    func_timeout(9 * 3600 - 120, get_ranking_performance,
                  args=(q_encoder, project_directory, model_name, get_datasets))
 
 

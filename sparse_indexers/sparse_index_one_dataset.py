@@ -4,7 +4,7 @@ from general_dense_indexers.dense_index_one_dataset import get_dataset_name
 
 def docs_iter(dataset):
     for d in dataset.get_corpus_iter():
-        yield {"text": d["text"], "title": d["title"], "docno": d["docno"].encode("utf-8")}
+        yield {'docno': str(d['docno'].encode('utf-8')), 'text': d['text']}
 
 
 def index_one(prefix_dataset, dataset_name, max_doc_id_length):
@@ -25,7 +25,7 @@ def index_one(prefix_dataset, dataset_name, max_doc_id_length):
 def main():
     prefix_dataset = "irds:beir/"
     dataset_name = "fever"
-    max_id_length = 221
+    max_id_length = 227
     index_one(prefix_dataset, dataset_name, max_id_length)
 
 
