@@ -353,42 +353,39 @@ def time_fct(func, *args, **kwargs):
     return result
 
 
-def latency_per_query(captured_timeit_output_stdout, test_set_name, pipeline_name):
-    mean_time_search = re.search(r"(\d+\.\d+) s", captured_timeit_output_stdout)
-    mean_time = float(mean_time_search.group(1))
-    len_qrels = len(pt.get_dataset(test_set_name).get_topics())
-    mean_time_per_query = mean_time / len_qrels
+def latency_per_query(timeit_output, dataset_name, test_suffix, pipeline_name):
+    text_input = timeit_output.split(" s +- ")
+
+    mean_time = float(text_input[0])
+    standard_dev_time = float(text_input[1].split(" ms")[0])
+    len_topics = len(pt.get_dataset(dataset_name + test_suffix).get_topics())
+    mean_time_per_query = mean_time / len_topics
 
     # Transform in ms
     mean_time_per_query = mean_time_per_query * 1000
     mean_time_per_query = round(mean_time_per_query, 4)
+    store_latency(dataset_name, pipeline_name, mean_time_per_query, mean_time, standard_dev_time, len_topics,
+                  timeit_output)
+    return "Latency per query: " + str(mean_time_per_query) + " ms. " + "Experiment details: " + timeit_output
 
-    timeit_details = re.search(r'of(.*)', captured_timeit_output_stdout).group(1).strip()
-    store_latency(mean_time_per_query, test_set_name, pipeline_name, timeit_details)
-    return "Latency per query: " + str(mean_time_per_query) + " ms. " + "(Info: " + timeit_details
 
-
-def store_latency(mean_time_per_query, dataset, pipeline_name, timeit_details):
+def store_latency(dataset_name, pipeline_name, mean_time_per_query, exp_mean_time, standard_dev_time, len_topics,
+                  timeit_output):
     path_to_root = os.path.abspath(os.getcwd())
     file_path = path_to_root + '/../results/latency_data.csv'
 
     data = {
-        'dataset': [get_dataset_name(dataset)],
+        'dataset': [get_dataset_name(dataset_name)],
         'pipeline_name': [pipeline_name],
-        'mean_time_per_query': [mean_time_per_query],
-        'timeit_details': [timeit_details]
+        'mean_time_per_query (ms)': [mean_time_per_query],
+        'exp_time (s)': [exp_mean_time],
+        'standard_dev_time (ms)': [standard_dev_time],
+        'nr_queries': [len_topics],
+        'timeit_details': [timeit_output]
     }
     new_data_df = pd.DataFrame(data)
-    #
-    # if os.path.isfile(file_path):
-    #
-    #     df = pd.read_csv(file_path)
-    #     df = df.append(new_data_df, ignore_index=True)
-    # else:
-    #
-    #     df = new_data_df
+
     new_data_df.to_csv(file_path, mode='a', header=not os.path.isfile(file_path), index=False)
-    # df.to_csv(file_path, index=False)
 
 
 def time_fct_print_results(func, *args, **kwargs):
