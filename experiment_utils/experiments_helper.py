@@ -336,10 +336,10 @@ def run_pipeline_multiple_datasets_metrics(dataset_names, test_set_names, dev_se
     return pd.read_csv(file_path)
 
 
-def getOptimalAlpha(dataset_name, pipeline_name):
+def getOptimalAlpha(dataset_name, pipeline_name, model_directory):
     experiment_name = get_dataset_name(dataset_name) + ": " + pipeline_name
     path_to_root = os.path.abspath(os.getcwd())
-    df = pd.read_csv(path_to_root + '/../results/ranking_metrics_alpha.csv')
+    df = pd.read_csv(path_to_root + '/../../' + model_directory + '/results/ranking_metrics_alpha.csv')
     optimal_alpha = df[df['name'] == experiment_name]['alpha'].iloc[0]
     return optimal_alpha
 
@@ -353,7 +353,7 @@ def time_fct(func, *args, **kwargs):
     return result
 
 
-def latency_per_query(timeit_output, dataset_name, test_suffix, pipeline_name):
+def latency_per_query(timeit_output, dataset_name, test_suffix, pipeline_name, model_directory):
     text_input = timeit_output.split(" s +- ")
 
     mean_time = float(text_input[0])
@@ -365,14 +365,14 @@ def latency_per_query(timeit_output, dataset_name, test_suffix, pipeline_name):
     mean_time_per_query = mean_time_per_query * 1000
     mean_time_per_query = round(mean_time_per_query, 4)
     store_latency(dataset_name, pipeline_name, mean_time_per_query, mean_time, standard_dev_time, len_topics,
-                  timeit_output)
+                  timeit_output, model_directory)
     return "Latency per query: " + str(mean_time_per_query) + " ms. " + "Experiment details: " + timeit_output
 
 
 def store_latency(dataset_name, pipeline_name, mean_time_per_query, exp_mean_time, standard_dev_time, len_topics,
-                  timeit_output):
+                  timeit_output, model_directory):
     path_to_root = os.path.abspath(os.getcwd())
-    file_path = path_to_root + '/../results/latency_data.csv'
+    file_path = path_to_root + '/../../' + model_directory + '/results/latency_data.csv'
 
     data = {
         'dataset': [get_dataset_name(dataset_name)],
