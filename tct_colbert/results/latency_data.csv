@@ -1,3 +1,0 @@
-dataset,pipeline_name,mean_time_per_query (ms),exp_time (s),standard_dev_time (ms),nr_queries,timeit_details
-nfcorpus,BM25 >> tct_colbert_msmarco,28.9164,9.34,474.0,323,"9.34 s +- 474 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
-"
