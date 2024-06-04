@@ -1,0 +1,13 @@
+dataset,pipeline_name,mean_time_per_query (ms),exp_time (s),standard_dev_time (ms),nr_queries,timeit_details
+nfcorpus,BM25 >> snowflake-arctic-embed-m,19.4118,6.27,140.0,323,"6.27 s +- 140 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+"
+scifact,BM25 >> snowflake-arctic-embed-m,49.0,14.7,448.0,300,"14.7 s +- 448 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+"
+nfcorpus,BM25 >> snowflake-arctic-embed-m,5.5728,1.8,154.0,323,"1.8 s +- 154 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+"
+fiqa,BM25 >> snowflake-arctic-embed-m,13.5802,8.8,249.0,648,"8.8 s +- 249 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+"
+scifact,BM25 >> snowflake-arctic-embed-m,14.7667,4.43,177.0,300,"4.43 s +- 177 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+"
+fiqa,BM25 >> snowflake-arctic-embed-m,44.5988,28.9,2790.0,648,"28.9 s +- 2.79 s per loop (mean +- std. dev. of 7 runs, 1 loop each)
+"

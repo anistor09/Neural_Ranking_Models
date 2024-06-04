@@ -357,7 +357,12 @@ def latency_per_query(timeit_output, dataset_name, test_suffix, pipeline_name, m
     text_input = timeit_output.split(" s +- ")
 
     mean_time = float(text_input[0])
-    standard_dev_time = float(text_input[1].split(" ms")[0])
+    print(timeit_output)
+    try:
+        standard_dev_time = float(text_input[1].split(" ms")[0])
+    except Exception as e:
+        standard_dev_time = float(text_input[1].split(" s")[0]) * 1000
+
     len_topics = len(pt.get_dataset(dataset_name + test_suffix).get_topics())
     mean_time_per_query = mean_time / len_topics
 
