@@ -18,6 +18,17 @@ def name_comparator(names):
     return [splits(name) for name in names]
 
 
+def get_short_name(name):
+    if "gte" in name or "bge" in name:
+        return '-'.join(name.split('-')[:2])
+    elif "arctic" in name:
+        return 'arctic' + '-' + name.split('-')[-1]
+    elif "tct" in name:
+        return '-'.join(name.split('_')[:2])
+    else:
+        return name
+
+
 def aggregate_csv_files(input_files, output_file):
     # Create a list to hold data from each CSV file
     data_frames = []
@@ -26,14 +37,10 @@ def aggregate_csv_files(input_files, output_file):
     output_file = path_to_root + "/results/" + output_file
 
     file_paths = [path_to_root + dir_path + input_files for dir_path in directories]
-    print(file_paths)
+
     # Loop over all files in the directory
     for file_path in file_paths:
         df = pd.read_csv(file_path)
-
-        # Append a blank row at the end of each DataFrame
-        # blank_row = pd.DataFrame({col: [''] for col in df.columns})
-        # df = pd.concat([df, blank_row], ignore_index=True)
 
         data_frames.append(df)
 
@@ -55,11 +62,28 @@ def aggregate_csv_files(input_files, output_file):
 
     unique_dataframe = duplicate_dataframe.groupby('name').tail(1)
 
+    unique_dataframe['model'] = unique_dataframe['model'].apply(lambda x: get_short_name(x))
+
     sorted_df = unique_dataframe.sort_values(by='name', key=name_comparator)
 
     sorted_df = sorted_df.round(4)
 
     # Save the combined data frame to a new CSV file, write header only once
+    sorted_df.to_csv(output_file, index=False)
+
+
+def merge_aggregations():
+    ranking_results = path_to_root + "/results/" + "aggreagated_ranking_results.csv"
+    latency_results = path_to_root + "/results/" + "aggreagated_latency_results.csv"
+    output_file = path_to_root + "/results/" + "aggreagated_ranking_latency_results.csv"
+
+    df_ranking = pd.read_csv(ranking_results)
+    df_latency = pd.read_csv(latency_results)
+    merged_df = pd.merge(df_ranking, df_latency, on=['dataset', 'model', 'name', 'pipeline_name'], how='inner')
+    columns_to_keep = ['dataset', 'model', 'mean_time_per_query (ms)', 'nDCG@10']
+    merged_df = merged_df[columns_to_keep]
+
+    sorted_df = merged_df.sort_values(by='model')
     sorted_df.to_csv(output_file, index=False)
 
 
@@ -84,7 +108,11 @@ def remove_duplicated_results(input_files):
 
 
 if __name__ == '__main__':
-    input_files = "latency_data.csv"
-    output_file = "aggreagated_latency_results.csv"
-    aggregate_csv_files(input_files, output_file)
-    # remove_duplicated_results(input_files)
+    # input_files = "ranking_metrics_alpha.csv"
+    # output_file = "aggreagated_ranking_results.csv"
+    # aggregate_csv_files(input_files, output_file)
+    #
+    # input_files = "latency_data.csv"
+    # output_file = "aggreagated_latency_results.csv"
+    # aggregate_csv_files(input_files, output_file)
+    merge_aggregations()
