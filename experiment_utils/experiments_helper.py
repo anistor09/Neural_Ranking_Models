@@ -223,6 +223,9 @@ def test_first_stage_retrieval(dataset_name, test_topics, test_qrels, eval_metri
     # Spare index
     retriever = load_sparse_index_from_disk(dataset_name, path_to_root, in_memory=in_memory_sparse,
                                             index_path=index_path)
+    if 'fever' in dataset_name or 'dbpedia' in dataset_name:
+        encode_utf = EncodeUTF()
+        retriever = retriever >> encode_utf
 
     experiment_name = get_dataset_name(dataset_name) + ": " + pipeline_name
 

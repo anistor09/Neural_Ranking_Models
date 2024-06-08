@@ -107,6 +107,37 @@ def remove_duplicated_results(input_files):
         print(unique_dataframe)
 
 
+def create_latex_table(target_value):
+    models = ["BM25", "tct-colbert", "gte-base", "bge-base", "arctic-m", "bge-small", "arctic-xs"]
+    datasets = ['passage', 'nfcorpus', 'hotpotqa', 'fiqa', 'quora', 'dbpedia_entity', 'fever', 'scifact']
+    latex_table = ""
+
+    ranking_results_path = path_to_root + "/results/" + "aggreagated_ranking_results.csv"
+
+    df = pd.read_csv(ranking_results_path)
+
+    for dataset in datasets:
+        row = dataset + " & "
+        # print(dataset)
+        for model in models:
+            if model == "BM25":
+                value = str(0.0)
+                # value = float(value)
+            else:
+                # print(model)
+                value = df[(df['model'] == model) & (df['dataset'] == dataset)][target_value].iloc[0]
+                # print(model)
+                # value = float(value)
+                value = str(value)
+            # row += f"{value:.4f}" + " & "
+            row += value + " & "
+        row = row[:-2]
+        row += " \\\\" + " \n"
+        latex_table += row
+
+    print(latex_table)
+
+
 if __name__ == '__main__':
     # input_files = "ranking_metrics_alpha.csv"
     # output_file = "aggreagated_ranking_results.csv"
@@ -115,4 +146,7 @@ if __name__ == '__main__':
     # input_files = "latency_data.csv"
     # output_file = "aggreagated_latency_results.csv"
     # aggregate_csv_files(input_files, output_file)
-    merge_aggregations()
+    # merge_aggregations()
+
+    extracted_value = "RR@10"
+    create_latex_table(extracted_value)
