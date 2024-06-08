@@ -7,8 +7,7 @@ import torch
 import torch.nn.functional as F
 
 
-
-class NomicEncoder(Encoder):
+class MiniLMEncoder(Encoder):
     """Uses a pre-trained transformer model for encoding. Returns the pooler output."""
 
     def __init__(
@@ -22,9 +21,9 @@ class NomicEncoder(Encoder):
             **tokenizer_args: Additional tokenizer arguments.
         """
         super().__init__()
-        self.tokenizer = AutoTokenizer.from_pretrained('bert-base-uncased')
+        self.tokenizer = AutoTokenizer.from_pretrained(model)
 
-        self.model = AutoModel.from_pretrained(model, trust_remote_code=True)
+        self.model = AutoModel.from_pretrained(model)
 
         self.model.to(device)
         self.model.eval()
@@ -32,7 +31,7 @@ class NomicEncoder(Encoder):
         self.tokenizer_args = tokenizer_args
 
     def mean_pooling(self, model_output, attention_mask):
-        token_embeddings = model_output[0].detach().cpu()
+        token_embeddings = model_output[0].detach().cpu()  # First element of model_output contains all token embeddings
         input_mask_expanded = attention_mask.unsqueeze(-1).expand(token_embeddings.size()).float()
         return torch.sum(token_embeddings * input_mask_expanded, 1) / torch.clamp(input_mask_expanded.sum(1), min=1e-9)
 
@@ -52,15 +51,3 @@ class NomicEncoder(Encoder):
 
     def __call__(self, input_text: Sequence[str]) -> Tensor:
         return self.encode(input_text)
-
-
-class NomicDocumentEncoder(NomicEncoder):
-    def __call__(self, document: Sequence[str]) -> Tensor:
-        passage_prefix = 'search_document: '
-        return self.encode([passage_prefix + d for d in document])
-
-
-class NomicQueryEncoder(NomicEncoder):
-    def __call__(self, queries: Sequence[str]) -> Tensor:
-        query_prefix = 'search_query: '
-        return self.encode([query_prefix + q for q in queries])
