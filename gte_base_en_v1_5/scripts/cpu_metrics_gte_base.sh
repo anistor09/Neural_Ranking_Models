@@ -1,11 +1,11 @@
 #!/bin/bash
 
 #SBATCH --job-name="cpu_metrics_gte"
-#SBATCH --time=05:00:00
+#SBATCH --time=09:00:00
 #SBATCH --partition=compute-p2
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
-#SBATCH --mem-per-cpu=64G
+#SBATCH --mem-per-cpu=90G
 #SBATCH --account=Education-EEMCS-Courses-CSE3000
 
 module load 2023r1
