@@ -15,9 +15,9 @@ lengths.append(7)
 
 
 def index_minilm_collections():
-    for index, dataset_name in enumerate(beir_datasets):
+    for index, dataset_name in enumerate(datasets):
         try:
-            index_miniLM_v2_collection(prefix_dataset + dataset_name, lengths[index], directory)
+            index_miniLM_v2_collection(dataset_name, lengths[index], directory)
             print(dataset_name + " DONE")
         except Exception as e:
             # Handles any other exceptions

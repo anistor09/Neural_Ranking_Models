@@ -15,9 +15,9 @@ lengths.append(7)
 
 
 def index_nomic_collections():
-    for index, dataset_name in enumerate(beir_datasets):
+    for index, dataset_name in enumerate(datasets):
         try:
-            index_nomic_v1_collection(prefix_dataset + dataset_name, lengths[index], directory)
+            index_nomic_v1_collection(dataset_name, lengths[index], directory)
             print(dataset_name + " DONE")
         except Exception as e:
             # Handles any other exceptions
