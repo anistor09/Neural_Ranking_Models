@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name="cpu_metrics_e5_small"
-#SBATCH --time=02:00:00
+#SBATCH --time=05:00:00
 #SBATCH --partition=compute-p2
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2

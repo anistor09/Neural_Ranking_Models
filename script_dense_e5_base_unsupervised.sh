@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name="e5_base_unsupervised_multiple"
-#SBATCH --time=16:00:00
+#SBATCH --time=10:00:00
 #SBATCH --partition=gpu-a100
 #SBATCH --gpus-per-task=1
 #SBATCH --ntasks=1
