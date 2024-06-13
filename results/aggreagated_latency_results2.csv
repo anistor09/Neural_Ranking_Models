@@ -1,0 +1,55 @@
+dataset,pipeline_name,mean_time_per_query (ms),exp_time (s),standard_dev_time (ms),nr_queries,timeit_details,name,model
+fiqa,BM25 >> bge-base-en-v1.5,41.2037,26.7,1020.0,648,"26.7 s +- 1.02 s per loop (mean +- std. dev. of 7 runs, 1 loop each)
+",fiqa: BM25 >> bge-base-en-v1.5,bge-base
+nfcorpus,BM25 >> bge-base-en-v1.5,18.7926,6.07,146.0,323,"6.07 s +- 146 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+",nfcorpus: BM25 >> bge-base-en-v1.5,bge-base
+scifact,BM25 >> bge-base-en-v1.5,49.0,14.7,359.0,300,"14.7 s +- 359 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+",scifact: BM25 >> bge-base-en-v1.5,bge-base
+fiqa,BM25 >> bge-small-en-v1.5,18.5185,12.0,479.0,648,"12 s +- 479 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+",fiqa: BM25 >> bge-small-en-v1.5,bge-small
+nfcorpus,BM25 >> bge-small-en-v1.5,8.0495,2.6,101.0,323,"2.6 s +- 101 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+",nfcorpus: BM25 >> bge-small-en-v1.5,bge-small
+scifact,BM25 >> bge-small-en-v1.5,20.9667,6.29,187.0,300,"6.29 s +- 187 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+",scifact: BM25 >> bge-small-en-v1.5,bge-small
+fiqa,BM25 >> e5-base-unsupervised,36.1111,23.4,1600.0,648,"23.4 s +- 1.6 s per loop (mean +- std. dev. of 7 runs, 1 loop each)
+",fiqa: BM25 >> e5-base-unsupervised,e5-base-pt
+nfcorpus,BM25 >> e5-base-unsupervised,16.4706,5.32,192.0,323,"5.32 s +- 192 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+",nfcorpus: BM25 >> e5-base-unsupervised,e5-base-pt
+scifact,BM25 >> e5-base-unsupervised,44.6667,13.4,215.0,300,"13.4 s +- 215 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+",scifact: BM25 >> e5-base-unsupervised,e5-base-pt
+fiqa,BM25 >> e5-base-v2,39.1975,25.4,1320.0,648,"25.4 s +- 1.32 s per loop (mean +- std. dev. of 7 runs, 1 loop each)
+",fiqa: BM25 >> e5-base-v2,e5-base
+nfcorpus,BM25 >> e5-base-v2,16.8111,5.43,268.0,323,"5.43 s +- 268 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+",nfcorpus: BM25 >> e5-base-v2,e5-base
+scifact,BM25 >> e5-base-v2,46.0,13.8,358.0,300,"13.8 s +- 358 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+",scifact: BM25 >> e5-base-v2,e5-base
+fiqa,BM25 >> e5-small-v2,17.9012,11.6,361.0,648,"11.6 s +- 361 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+",fiqa: BM25 >> e5-small-v2,e5-small
+nfcorpus,BM25 >> e5-small-v2,6.9659,2.25,131.0,323,"2.25 s +- 131 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+",nfcorpus: BM25 >> e5-small-v2,e5-small
+scifact,BM25 >> e5-small-v2,20.2667,6.08,349.0,300,"6.08 s +- 349 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+",scifact: BM25 >> e5-small-v2,e5-small
+fiqa,BM25 >> gte-base-en-v1.5,43.3642,28.1,2110.0,648,"28.1 s +- 2.11 s per loop (mean +- std. dev. of 7 runs, 1 loop each)
+",fiqa: BM25 >> gte-base-en-v1.5,gte-base
+nfcorpus,BM25 >> gte-base-en-v1.5,17.2136,5.56,87.2,323,"5.56 s +- 87.2 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+",nfcorpus: BM25 >> gte-base-en-v1.5,gte-base
+scifact,BM25 >> gte-base-en-v1.5,54.3333,16.3,433.0,300,"16.3 s +- 433 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+",scifact: BM25 >> gte-base-en-v1.5,gte-base
+fiqa,BM25 >> snowflake-arctic-embed-m,44.5988,28.9,2790.0,648,"28.9 s +- 2.79 s per loop (mean +- std. dev. of 7 runs, 1 loop each)
+",fiqa: BM25 >> snowflake-arctic-embed-m,arctic-m
+nfcorpus,BM25 >> snowflake-arctic-embed-m,5.5728,1.8,154.0,323,"1.8 s +- 154 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+",nfcorpus: BM25 >> snowflake-arctic-embed-m,arctic-m
+scifact,BM25 >> snowflake-arctic-embed-m,14.7667,4.43,177.0,300,"4.43 s +- 177 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+",scifact: BM25 >> snowflake-arctic-embed-m,arctic-m
+fiqa,BM25 >> snowflake-arctic-embed-xs,13.7963,8.94,192.0,648,"8.94 s +- 192 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+",fiqa: BM25 >> snowflake-arctic-embed-xs,arctic-xs
+nfcorpus,BM25 >> snowflake-arctic-embed-xs,5.6656,1.83,108.0,323,"1.83 s +- 108 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+",nfcorpus: BM25 >> snowflake-arctic-embed-xs,arctic-xs
+scifact,BM25 >> snowflake-arctic-embed-xs,14.9,4.47,163.0,300,"4.47 s +- 163 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+",scifact: BM25 >> snowflake-arctic-embed-xs,arctic-xs
+fiqa,BM25 >> tct_colbert_msmarco,47.9938,31.1,2650.0,648,"31.1 s +- 2.65 s per loop (mean +- std. dev. of 7 runs, 1 loop each)
+",fiqa: BM25 >> tct_colbert_msmarco,tct-colbert
+nfcorpus,BM25 >> tct_colbert_msmarco,33.7461,10.9,321.0,323,"10.9 s +- 321 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+",nfcorpus: BM25 >> tct_colbert_msmarco,tct-colbert
+scifact,BM25 >> tct_colbert_msmarco,43.3333,13.0,251.0,300,"13 s +- 251 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+",scifact: BM25 >> tct_colbert_msmarco,tct-colbert

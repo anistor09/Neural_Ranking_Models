@@ -5,7 +5,7 @@ import pandas as pd
 path_to_root = "/"
 # if run from file location -> path_to_root =  "/../"
 path_to_root = os.path.abspath(os.getcwd()) + path_to_root
-directories = ["bge", "gte_base_en_v1_5", "snowflake", "tct_colbert"]
+directories = ["bge", "gte_base_en_v1_5", "snowflake", "tct_colbert", "e5"]
 
 
 def splits(name):
@@ -25,6 +25,11 @@ def get_short_name(name):
         return 'arctic' + '-' + name.split('-')[-1]
     elif "tct" in name:
         return '-'.join(name.split('_')[:2])
+    elif "e5" in name:
+        if "unsupervised" in name:
+            return "e5-base-pt"
+        else:
+            return '-'.join(name.split('-')[:2])
     else:
         return name
 
@@ -59,6 +64,7 @@ def aggregate_csv_files(input_files, output_file):
 
     else:
         duplicate_dataframe['model'] = duplicate_dataframe['pipeline_name'].apply(lambda x: x.split(' ')[2])
+        duplicate_dataframe['name'] = duplicate_dataframe['dataset'] + ": " + duplicate_dataframe['pipeline_name']
 
     unique_dataframe = duplicate_dataframe.groupby('name').tail(1)
 
@@ -73,9 +79,9 @@ def aggregate_csv_files(input_files, output_file):
 
 
 def merge_aggregations():
-    ranking_results = path_to_root + "/results/" + "aggreagated_ranking_results.csv"
-    latency_results = path_to_root + "/results/" + "aggreagated_latency_results.csv"
-    output_file = path_to_root + "/results/" + "aggreagated_ranking_latency_results.csv"
+    ranking_results = path_to_root + "/results/" + "aggreagated_ranking_results2.csv"
+    latency_results = path_to_root + "/results/" + "aggreagated_latency_results2.csv"
+    output_file = path_to_root + "/results/" + "aggreagated_ranking_latency_results2.csv"
 
     df_ranking = pd.read_csv(ranking_results)
     df_latency = pd.read_csv(latency_results)
@@ -108,11 +114,13 @@ def remove_duplicated_results(input_files):
 
 
 def create_latex_table(target_value):
-    models = ["BM25", "tct-colbert", "gte-base", "bge-base", "arctic-m", "bge-small", "arctic-xs"]
+    models = ["BM25", "tct-colbert", "gte-base", "bge-base", "arctic-m", "e5-base", "e5-base-pt", "bge-small",
+              "arctic-xs", "e5-small", "nomic"]
+
     datasets = ['passage', 'nfcorpus', 'hotpotqa', 'fiqa', 'quora', 'dbpedia_entity', 'fever', 'scifact']
     latex_table = ""
 
-    ranking_results_path = path_to_root + "/results/" + "aggreagated_ranking_results.csv"
+    ranking_results_path = path_to_root + "/results/" + "aggreagated_ranking_results2.csv"
 
     df = pd.read_csv(ranking_results_path)
 
@@ -121,15 +129,17 @@ def create_latex_table(target_value):
         # print(dataset)
         for model in models:
             if model == "BM25":
-                value = str(0.0)
+                value = "-"
                 # value = float(value)
             else:
-                # print(model)
-                value = df[(df['model'] == model) & (df['dataset'] == dataset)][target_value].iloc[0]
-                # print(model)
+
+                try:
+                    value = df[(df['model'] == model) & (df['dataset'] == dataset)][target_value].iloc[0]
+                except Exception as e:
+                    value = "-"
+
                 # value = float(value)
-                value = str(value)
-            # row += f"{value:.4f}" + " & "
+            value = str(value)
             row += value + " & "
         row = row[:-2]
         row += " \\\\" + " \n"
@@ -140,11 +150,11 @@ def create_latex_table(target_value):
 
 if __name__ == '__main__':
     # input_files = "ranking_metrics_alpha.csv"
-    # output_file = "aggreagated_ranking_results.csv"
+    # output_file = "aggreagated_ranking_results2.csv"
     # aggregate_csv_files(input_files, output_file)
     #
     # input_files = "latency_data.csv"
-    # output_file = "aggreagated_latency_results.csv"
+    # output_file = "aggreagated_latency_results2.csv"
     # aggregate_csv_files(input_files, output_file)
     # merge_aggregations()
 
