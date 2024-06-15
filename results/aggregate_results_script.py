@@ -5,7 +5,7 @@ import pandas as pd
 path_to_root = "/"
 # if run from file location -> path_to_root =  "/../"
 path_to_root = os.path.abspath(os.getcwd()) + path_to_root
-directories = ["bge", "gte_base_en_v1_5", "snowflake", "tct_colbert", "e5"]
+directories = ["bge", "gte_base_en_v1_5", "snowflake", "tct_colbert", "e5", "nomic"]
 
 
 def splits(name):
@@ -30,6 +30,8 @@ def get_short_name(name):
             return "e5-base-pt"
         else:
             return '-'.join(name.split('-')[:2])
+    elif "nomic" in name:
+        return "nomic"
     else:
         return name
 
@@ -79,9 +81,9 @@ def aggregate_csv_files(input_files, output_file):
 
 
 def merge_aggregations():
-    ranking_results = path_to_root + "/results/" + "aggreagated_ranking_results2.csv"
-    latency_results = path_to_root + "/results/" + "aggreagated_latency_results2.csv"
-    output_file = path_to_root + "/results/" + "aggreagated_ranking_latency_results2.csv"
+    ranking_results = path_to_root + "/results/" + "aggreagated_ranking_results.csv"
+    latency_results = path_to_root + "/results/" + "aggreagated_latency_results.csv"
+    output_file = path_to_root + "/results/" + "aggreagated_ranking_latency_results.csv"
 
     df_ranking = pd.read_csv(ranking_results)
     df_latency = pd.read_csv(latency_results)
@@ -120,7 +122,7 @@ def create_latex_table(target_value):
     datasets = ['passage', 'nfcorpus', 'hotpotqa', 'fiqa', 'quora', 'dbpedia_entity', 'fever', 'scifact']
     latex_table = ""
 
-    ranking_results_path = path_to_root + "/results/" + "aggreagated_ranking_results2.csv"
+    ranking_results_path = path_to_root + "/results/" + "aggreagated_ranking_results.csv"
 
     df = pd.read_csv(ranking_results_path)
 
@@ -149,14 +151,14 @@ def create_latex_table(target_value):
 
 
 if __name__ == '__main__':
-    # input_files = "ranking_metrics_alpha.csv"
-    # output_file = "aggreagated_ranking_results2.csv"
-    # aggregate_csv_files(input_files, output_file)
-    #
-    # input_files = "latency_data.csv"
-    # output_file = "aggreagated_latency_results2.csv"
-    # aggregate_csv_files(input_files, output_file)
-    # merge_aggregations()
+    input_files = "ranking_metrics_alpha.csv"
+    output_file = "aggreagated_ranking_results.csv"
+    aggregate_csv_files(input_files, output_file)
 
-    extracted_value = "RR@10"
-    create_latex_table(extracted_value)
+    input_files = "latency_data.csv"
+    output_file = "aggreagated_latency_results.csv"
+    aggregate_csv_files(input_files, output_file)
+    merge_aggregations()
+
+    # extracted_value = "RR@10"
+    # create_latex_table(extracted_value)

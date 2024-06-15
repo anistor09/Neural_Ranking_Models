@@ -19,13 +19,25 @@ def get_datasets():
     return merge_dataset_names(prefix, dataset_names, devset_suffixes, test_suffixes)
 
 
+def get_ms_marco():
+    prefix = "irds:"
+
+    dataset_names = ["msmarco-passage"]
+
+    devset_suffixes = ["/dev"]
+
+    test_suffixes = ["/trec-dl-2019"]
+
+    return merge_dataset_names(prefix, dataset_names, devset_suffixes, test_suffixes)
+
+
 def run_metrics_nomic(model_name="nomic-embed-text-v1"):
     package = "nomic-ai/"
     q_encoder = NomicQueryEncoder(package + model_name)
     project_directory = "nomic"
 
-    func_timeout(9 * 3600 - 120, get_ranking_performance,
-                 args=(q_encoder, project_directory, model_name, get_datasets))
+    func_timeout(11 * 3600 - 120, get_ranking_performance,
+                 args=(q_encoder, project_directory, model_name, get_ms_marco))
 
 
 if __name__ == '__main__':
