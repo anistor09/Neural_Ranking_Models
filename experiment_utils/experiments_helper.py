@@ -51,7 +51,10 @@ def load_dense_index_from_disk(dataset_name, query_encoder, model_name, path_to_
 
 
 def find_optimal_alpha(pipeline_no_interpolation, topics, qrels, dataset_name, model_name, path_to_root,
-                       model_directory, alpha_vals=None):
+                       model_directory, alpha_vals=None, save_trec_files_only=True):
+    if save_trec_files_only:
+        return getOptimalAlpha(dataset_name, "BM25 >> " + model_name, model_directory)
+
     file_path = path_to_root + "/" + model_directory + "/results/alpha_search_dev.csv"
 
     if alpha_vals is None:
@@ -100,21 +103,39 @@ def run_single_experiment_name(pipeline, dataset_name, evaluation_metrics, name,
                                  test_set.get_qrels(), evaluation_metrics, name, timed)
 
 
-def run_single_experiment(pipeline, topics, qrels, evaluation_metrics, name, timed=False):
-    if timed:
-        return time_fct(pt.Experiment, [pipeline],
-                        topics,
-                        qrels,
-                        eval_metrics=evaluation_metrics,
-                        names=[name])
+def get_model_name(exp_name):
+    tokens = exp_name.split(":")
+    model = tokens[1].split(" ")[3]
+
+    return model
+
+
+def run_single_experiment(pipeline, topics, qrels, evaluation_metrics, name, timed=False, save_trec_files_only=True):
+    if save_trec_files_only:
+        result = pipeline(topics)
+        final_significance_testing = pt.model.add_ranks(result)
+
+        dataset = name.split(":")[0]
+        dir_path = os.path.abspath(os.getcwd()) + '/results/trec_runs/' + dataset
+        os.makedirs(dir_path, exist_ok=True)
+
+        pt.io.write_results(final_significance_testing, dir_path + "/" + get_model_name(name) + ".trec")
+        return None
     else:
-        return pt.Experiment(
-            [pipeline],
-            topics,
-            qrels,
-            eval_metrics=evaluation_metrics,
-            names=[name]
-        )
+        if timed:
+            return time_fct(pt.Experiment, [pipeline],
+                            topics,
+                            qrels,
+                            eval_metrics=evaluation_metrics,
+                            names=[name])
+        else:
+            return pt.Experiment(
+                [pipeline],
+                topics,
+                qrels,
+                eval_metrics=evaluation_metrics,
+                names=[name]
+            )
 
 
 def run_multiple_experiment_name(pipeline, dataset_name, evaluation_metrics, names):
@@ -300,7 +321,7 @@ def get_timeit_dependencies(dataset_name, test_topics, q_encoder, model_name,
 
 
 def run_pipeline_multiple_datasets_metrics(dataset_names, test_set_names, dev_set_names, q_encoder, model_name,
-                                           path_to_root, model_directory):
+                                           path_to_root, model_directory, save_trec_files_only=True):
     pipeline_name = "BM25 >> " + model_name
     file_path = path_to_root + "/" + model_directory + "/results/ranking_metrics_alpha.csv"
     global eval_metrics
@@ -318,31 +339,39 @@ def run_pipeline_multiple_datasets_metrics(dataset_names, test_set_names, dev_se
                                                                model_name, pipeline_name,
                                                                path_to_root, model_directory,
                                                                dev_set_name=dev_set_names[i], timed=True)
-            result['alpha'] = optimal_alpha
-            result.to_csv(file_path, mode='a', header=not os.path.isfile(file_path), index=False)
-            print(dataset_names[i] + " DONE")
+
+            if not save_trec_files_only:
+                result['alpha'] = optimal_alpha
+                result.to_csv(file_path, mode='a', header=not os.path.isfile(file_path), index=False)
+                print(dataset_names[i] + " DONE")
 
         except Exception as e:
             # Handles any other exceptions
             print(dataset_names[i] + " FAILED")
             print(f"An error occurred: {e} for dataset {dataset_names[i]}")
             print(traceback.print_exc())
+    if not save_trec_files_only:
+        duplicate_dataframe = pd.read_csv(file_path)
 
-    duplicate_dataframe = pd.read_csv(file_path)
+        print("BEFORE REMOVING DUPLICATES")
+        print(duplicate_dataframe)
 
-    print("BEFORE REMOVING DUPLICATES")
-    print(duplicate_dataframe)
+        unique_dataframe = duplicate_dataframe.groupby('name').tail(1)
+        unique_dataframe.to_csv(file_path, index=False)
 
-    unique_dataframe = duplicate_dataframe.groupby('name').tail(1)
-    unique_dataframe.to_csv(file_path, index=False)
+        return pd.read_csv(file_path)
+    else:
+        return None
 
-    return pd.read_csv(file_path)
 
-
-def getOptimalAlpha(dataset_name, pipeline_name, model_directory):
+def getOptimalAlpha(dataset_name, pipeline_name, model_directory, save_trec_files_only=True):
     experiment_name = get_dataset_name(dataset_name) + ": " + pipeline_name
-    path_to_root = os.path.abspath(os.getcwd())
-    df = pd.read_csv(path_to_root + '/../../' + model_directory + '/results/ranking_metrics_alpha.csv')
+    path_to_root = os.path.abspath(os.getcwd()) + '/'
+
+    if not save_trec_files_only:
+        path_to_root += '../../'
+
+    df = pd.read_csv(path_to_root + model_directory + '/results/ranking_metrics_alpha.csv')
     optimal_alpha = df[df['name'] == experiment_name]['alpha'].iloc[0]
     return optimal_alpha
 

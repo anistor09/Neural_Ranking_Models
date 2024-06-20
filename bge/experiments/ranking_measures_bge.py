@@ -7,7 +7,7 @@ def get_datasets():
     prefix = "irds:"
 
     dataset_names = [
-        "beir/dbpedia-entity", "beir/fever", "msmarco-passage"
+        "beir/nfcorpus"
     ]
 
     n = len(dataset_names)
@@ -15,7 +15,7 @@ def get_datasets():
 
     test_suffixes = ["/test"] * n
     # devset_suffixes[0] = "/train"
-    test_suffixes[n - 1] = "/trec-dl-2019"
+    # test_suffixes[n - 1] = "/trec-dl-2019"
 
     return merge_dataset_names(prefix, dataset_names, devset_suffixes, test_suffixes)
 
