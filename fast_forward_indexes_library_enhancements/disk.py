@@ -9,8 +9,8 @@ from tqdm import tqdm
 
 import fast_forward
 from fast_forward.encoder import Encoder
-from fast_forward.index import Index, Mode
-from fast_forward.index.memory import InMemoryIndex
+from fast_forward_indexes_library_enhancements import Index, Mode
+from fast_forward_indexes_library_enhancements.memory import InMemoryIndex
 
 LOGGER = logging.getLogger(__name__)
 

@@ -1,0 +1,9 @@
+dataset,pipeline_name,mean_time_per_query (ms),exp_time (s),standard_dev_time (ms),nr_queries,timeit_details
+nfcorpus,BM25 >> gte-base-en-v1.5,11.5789,3.74,38.0,323,"3.74 s +- 38 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+"
+fiqa,BM25 >> gte-base-en-v1.5,25.1543,16.3,546.0,648,"16.3 s +- 546 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+"
+nfcorpus,BM25 >> gte-base-en-v1.5,13.2508,4.28,305.0,323,"4.28 s +- 305 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+"
+scifact,BM25 >> gte-base-en-v1.5,39.6667,11.9,153.0,300,"11.9 s +- 153 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+"

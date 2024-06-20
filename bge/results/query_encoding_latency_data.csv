@@ -1,0 +1,13 @@
+dataset,pipeline_name,mean_time_per_query (ms),exp_time (s),standard_dev_time (ms),nr_queries,timeit_details
+fiqa,BM25 >> bge-base-en-v1.5,24.6914,16.0,599.0,648,"16 s +- 599 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+"
+nfcorpus,BM25 >> bge-base-en-v1.5,14.2105,4.59,52.7,323,"4.59 s +- 52.7 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+"
+scifact,BM25 >> bge-base-en-v1.5,34.6667,10.4,156.0,300,"10.4 s +- 156 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+"
+fiqa,BM25 >> bge-small-en-v1.5,7.3457,4.76,282.0,648,"4.76 s +- 282 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+"
+nfcorpus,BM25 >> bge-small-en-v1.5,5.0774,1.64,63.8,323,"1.64 s +- 63.8 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+"
+scifact,BM25 >> bge-small-en-v1.5,12.8,3.84,90.4,300,"3.84 s +- 90.4 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+"

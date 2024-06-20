@@ -80,7 +80,7 @@ def aggregate_csv_files(input_files, output_file):
     sorted_df.to_csv(output_file, index=False)
 
 
-def merge_aggregations():
+def merge_ranking_latency_aggregations():
     ranking_results = path_to_root + "/results/" + "aggreagated_ranking_results.csv"
     latency_results = path_to_root + "/results/" + "aggreagated_latency_results.csv"
     output_file = path_to_root + "/results/" + "aggreagated_ranking_latency_results.csv"
@@ -92,6 +92,51 @@ def merge_aggregations():
     merged_df = merged_df[columns_to_keep]
 
     sorted_df = merged_df.sort_values(by='model')
+    sorted_df.to_csv(output_file, index=False)
+
+
+def merge_latency_parts_aggregations():
+    query_encoding_latency = path_to_root + "/results/" + "aggreagated_query_encoding_latency_results.csv"
+    vector_embedding_latency = path_to_root + "/results/" + "aggreagated_vector_embedding_latency_results.csv"
+    complete_latency_results = path_to_root + "/results/" + "aggreagated_latency_results.csv"
+    output_file = path_to_root + "/results/" + "aggreagated_latency_parts_results.csv"
+
+    columns_to_keep = ['dataset', 'model', 'mean_time_per_query (ms)']
+
+    df_qe = pd.read_csv(query_encoding_latency)
+    df_qe = df_qe[columns_to_keep]
+    df_ver = pd.read_csv(vector_embedding_latency)
+    df_ver = df_ver[columns_to_keep]
+    df_complete = pd.read_csv(complete_latency_results)
+    df_complete = df_complete[columns_to_keep]
+
+    df_complete['mean_time_per_query (ms)_total_latency'] = df_complete['mean_time_per_query (ms)']
+
+    df_complete = df_complete.drop(columns=['mean_time_per_query (ms)'])
+
+    segments_df = pd.merge(df_qe, df_ver, on=['dataset', 'model'],
+                           suffixes=('_query_embedding', '_embeddings_retrieval'))
+    # print(segments_df)
+
+    merged_df = pd.merge(segments_df, df_complete, on=['dataset', 'model'])
+
+    merged_df['query_embedding'] = merged_df['mean_time_per_query (ms)_query_embedding']
+    merged_df['doc_retrieval'] = merged_df['mean_time_per_query (ms)_embeddings_retrieval']
+    merged_df['total_latency'] = merged_df['mean_time_per_query (ms)_total_latency']
+
+    dropped_cols = ['mean_time_per_query (ms)_query_embedding', 'mean_time_per_query (ms)_embeddings_retrieval',
+                    'mean_time_per_query (ms)_total_latency']
+
+    merged_df = merged_df.drop(columns=dropped_cols)
+
+    sorted_df = merged_df.sort_values(by='model')
+
+    filtered = sorted_df[
+        sorted_df['total_latency'] - sorted_df['query_embedding'] < 3]
+
+    # Displaying the filtered DataFrame
+    print(filtered)
+
     sorted_df.to_csv(output_file, index=False)
 
 
@@ -114,10 +159,31 @@ def remove_duplicated_results(input_files):
         print("AFTER REMOVING DUPLICATES")
         print(unique_dataframe)
 
+bm25_values_rr = {
+    "passage": 0.7944,
+    "nfcorpus": 0.5344,
+    "hotpotqa": 0.6624,
+    "fiqa": 0.3103,
+    "quora": 0.7584,
+    "dbpedia_entity": 0.5268,
+    "fever": 0.3839,
+    "scifact": 0.6324
+}
+
+bm25_values_ndcg = {
+    "passage": 0.4795,
+    "nfcorpus": 0.3223,
+    "hotpotqa": 0.5128,
+    "fiqa": 0.2526,
+    "quora": 0.7676,
+    "dbpedia_entity": 0.2744,
+    "fever": 0.4273,
+    "scifact": 0.6722
+}
 
 def create_latex_table(target_value):
-    models = ["BM25", "tct-colbert", "gte-base", "bge-base", "arctic-m", "e5-base", "e5-base-pt", "bge-small",
-              "arctic-xs", "e5-small", "nomic"]
+    models = ["BM25", "tct-colbert", "gte-base", "bge-base", "arctic-m", "e5-base", "e5-base-pt", "nomic", "bge-small",
+              "arctic-xs", "e5-small"]
 
     datasets = ['passage', 'nfcorpus', 'hotpotqa', 'fiqa', 'quora', 'dbpedia_entity', 'fever', 'scifact']
     latex_table = ""
@@ -131,8 +197,13 @@ def create_latex_table(target_value):
         # print(dataset)
         for model in models:
             if model == "BM25":
-                value = "-"
-                # value = float(value)
+                if target_value == "RR@10":
+                    value = bm25_values_rr[dataset]
+                elif target_value == "nDCG@10":
+                    value = bm25_values_ndcg[dataset]
+                else:
+                    value = ""
+
             else:
 
                 try:
@@ -151,14 +222,24 @@ def create_latex_table(target_value):
 
 
 if __name__ == '__main__':
-    input_files = "ranking_metrics_alpha.csv"
-    output_file = "aggreagated_ranking_results.csv"
-    aggregate_csv_files(input_files, output_file)
+    # input_files = "ranking_metrics_alpha.csv"
+    # output_file = "aggreagated_ranking_results.csv"
+    # aggregate_csv_files(input_files, output_file)
+    #
+    # input_files = "latency_data.csv"
+    # output_file = "aggreagated_latency_results.csv"
+    # aggregate_csv_files(input_files, output_file)
+    # merge_ranking_latency_aggregations()
 
-    input_files = "latency_data.csv"
-    output_file = "aggreagated_latency_results.csv"
-    aggregate_csv_files(input_files, output_file)
-    merge_aggregations()
+    # input_files = "query_encoding_latency_data.csv"
+    # output_file = "aggreagated_query_encoding_latency_results.csv"
+    # aggregate_csv_files(input_files, output_file)
+    #
+    # input_files = "vector_embedding_latency_data.csv"
+    # output_file = "aggreagated_vector_embedding_latency_results.csv"
+    # aggregate_csv_files(input_files, output_file)
+    #
+    # merge_latency_parts_aggregations()
 
-    # extracted_value = "RR@10"
-    # create_latex_table(extracted_value)
+    extracted_value = "nDCG@10"
+    create_latex_table(extracted_value)

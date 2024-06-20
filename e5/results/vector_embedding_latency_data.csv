@@ -1,0 +1,19 @@
+dataset,pipeline_name,mean_time_per_query (ms),exp_time (s),standard_dev_time (ms),nr_queries,timeit_details
+fiqa,BM25 >> e5-base-v2,0.2562,0.166,3.79,648,"166 ms +- 3.79 ms per loop (mean +- std. dev. of 7 runs, 10 loops each)
+"
+nfcorpus,BM25 >> e5-base-v2,0.0194,0.00628,0.0632,323,"6.28 ms +- 63.2 us per loop (mean +- std. dev. of 7 runs, 100 loops each)
+"
+scifact,BM25 >> e5-base-v2,0.0332,0.009970000000000001,0.28300000000000003,300,"9.97 ms +- 283 us per loop (mean +- std. dev. of 7 runs, 100 loops each)
+"
+fiqa,BM25 >> e5-small-v2,0.1867,0.121,0.218,648,"121 ms +- 218 us per loop (mean +- std. dev. of 7 runs, 10 loops each)
+"
+nfcorpus,BM25 >> e5-small-v2,0.0152,0.00491,0.14400000000000002,323,"4.91 ms +- 144 us per loop (mean +- std. dev. of 7 runs, 100 loops each)
+"
+scifact,BM25 >> e5-small-v2,0.0253,0.00758,0.0111,300,"7.58 ms +- 11.1 us per loop (mean +- std. dev. of 7 runs, 100 loops each)
+"
+fiqa,BM25 >> e5-base-unsupervised,0.2562,0.166,5.56,648,"166 ms +- 5.56 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+"
+nfcorpus,BM25 >> e5-base-unsupervised,0.0206,0.00664,0.121,323,"6.64 ms +- 121 us per loop (mean +- std. dev. of 7 runs, 100 loops each)
+"
+scifact,BM25 >> e5-base-unsupervised,0.0329,0.009859999999999999,0.059000000000000004,300,"9.86 ms +- 59 us per loop (mean +- std. dev. of 7 runs, 100 loops each)
+"

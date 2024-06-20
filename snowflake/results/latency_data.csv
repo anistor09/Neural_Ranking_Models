@@ -1,13 +1,13 @@
 dataset,pipeline_name,mean_time_per_query (ms),exp_time (s),standard_dev_time (ms),nr_queries,timeit_details,name
-nfcorpus,BM25 >> snowflake-arctic-embed-m,5.5728,1.8,154.0,323,"1.8 s +- 154 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
-",nfcorpus: BM25 >> snowflake-arctic-embed-m
-scifact,BM25 >> snowflake-arctic-embed-m,14.7667,4.43,177.0,300,"4.43 s +- 177 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
-",scifact: BM25 >> snowflake-arctic-embed-m
 fiqa,BM25 >> snowflake-arctic-embed-m,44.5988,28.9,2790.0,648,"28.9 s +- 2.79 s per loop (mean +- std. dev. of 7 runs, 1 loop each)
 ",fiqa: BM25 >> snowflake-arctic-embed-m
 fiqa,BM25 >> snowflake-arctic-embed-xs,13.7963,8.94,192.0,648,"8.94 s +- 192 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
 ",fiqa: BM25 >> snowflake-arctic-embed-xs
-nfcorpus,BM25 >> snowflake-arctic-embed-xs,5.6656,1.83,108.0,323,"1.83 s +- 108 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+nfcorpus,BM25 >> snowflake-arctic-embed-m,20.3715,6.58,289.0,323,"6.58 s +- 289 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+",nfcorpus: BM25 >> snowflake-arctic-embed-m
+scifact,BM25 >> snowflake-arctic-embed-m,51.3333,15.4,1050.0,300,"15.4 s +- 1.05 s per loop (mean +- std. dev. of 7 runs, 1 loop each)
+",scifact: BM25 >> snowflake-arctic-embed-m
+nfcorpus,BM25 >> snowflake-arctic-embed-xs,5.3251,1.72,104.0,323,"1.72 s +- 104 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
 ",nfcorpus: BM25 >> snowflake-arctic-embed-xs
-scifact,BM25 >> snowflake-arctic-embed-xs,14.9,4.47,163.0,300,"4.47 s +- 163 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+scifact,BM25 >> snowflake-arctic-embed-xs,14.3667,4.31,134.0,300,"4.31 s +- 134 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
 ",scifact: BM25 >> snowflake-arctic-embed-xs

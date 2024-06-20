@@ -1,0 +1,7 @@
+dataset,pipeline_name,mean_time_per_query (ms),exp_time (s),standard_dev_time (ms),nr_queries,timeit_details
+fiqa,BM25 >> tct_colbert_msmarco,31.3272,20.3,725.0,648,"20.3 s +- 725 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+"
+nfcorpus,BM25 >> tct_colbert_msmarco,25.0464,8.09,177.0,323,"8.09 s +- 177 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+"
+scifact,BM25 >> tct_colbert_msmarco,26.1333,7.84,128.0,300,"7.84 s +- 128 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+"

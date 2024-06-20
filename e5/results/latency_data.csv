@@ -5,15 +5,15 @@ nfcorpus,BM25 >> e5-base-v2,16.8111,5.43,268.0,323,"5.43 s +- 268 ms per loop (m
 "
 scifact,BM25 >> e5-base-v2,46.0,13.8,358.0,300,"13.8 s +- 358 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
 "
-fiqa,BM25 >> e5-small-v2,17.9012,11.6,361.0,648,"11.6 s +- 361 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
-"
-nfcorpus,BM25 >> e5-small-v2,6.9659,2.25,131.0,323,"2.25 s +- 131 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
-"
-scifact,BM25 >> e5-small-v2,20.2667,6.08,349.0,300,"6.08 s +- 349 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
-"
 fiqa,BM25 >> e5-base-unsupervised,36.1111,23.4,1600.0,648,"23.4 s +- 1.6 s per loop (mean +- std. dev. of 7 runs, 1 loop each)
 "
 nfcorpus,BM25 >> e5-base-unsupervised,16.4706,5.32,192.0,323,"5.32 s +- 192 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
 "
 scifact,BM25 >> e5-base-unsupervised,44.6667,13.4,215.0,300,"13.4 s +- 215 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+"
+nfcorpus,BM25 >> e5-small-v2,6.5944,2.13,180.0,323,"2.13 s +- 180 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+"
+fiqa,BM25 >> e5-small-v2,17.5926,11.4,523.0,648,"11.4 s +- 523 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+"
+scifact,BM25 >> e5-small-v2,19.9333,5.98,140.0,300,"5.98 s +- 140 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
 "

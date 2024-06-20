@@ -5,9 +5,9 @@ nfcorpus,BM25 >> bge-base-en-v1.5,18.7926,6.07,146.0,323,"6.07 s +- 146 ms per l
 ",nfcorpus: BM25 >> bge-base-en-v1.5,bge-base
 scifact,BM25 >> bge-base-en-v1.5,49.0,14.7,359.0,300,"14.7 s +- 359 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
 ",scifact: BM25 >> bge-base-en-v1.5,bge-base
-fiqa,BM25 >> bge-small-en-v1.5,18.5185,12.0,479.0,648,"12 s +- 479 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+fiqa,BM25 >> bge-small-en-v1.5,18.6728,12.1,299.0,648,"12.1 s +- 299 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
 ",fiqa: BM25 >> bge-small-en-v1.5,bge-small
-nfcorpus,BM25 >> bge-small-en-v1.5,8.0495,2.6,101.0,323,"2.6 s +- 101 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+nfcorpus,BM25 >> bge-small-en-v1.5,7.9567,2.57,126.0,323,"2.57 s +- 126 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
 ",nfcorpus: BM25 >> bge-small-en-v1.5,bge-small
 scifact,BM25 >> bge-small-en-v1.5,20.9667,6.29,187.0,300,"6.29 s +- 187 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
 ",scifact: BM25 >> bge-small-en-v1.5,bge-small
@@ -23,11 +23,11 @@ nfcorpus,BM25 >> e5-base-v2,16.8111,5.43,268.0,323,"5.43 s +- 268 ms per loop (m
 ",nfcorpus: BM25 >> e5-base-v2,e5-base
 scifact,BM25 >> e5-base-v2,46.0,13.8,358.0,300,"13.8 s +- 358 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
 ",scifact: BM25 >> e5-base-v2,e5-base
-fiqa,BM25 >> e5-small-v2,17.9012,11.6,361.0,648,"11.6 s +- 361 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+fiqa,BM25 >> e5-small-v2,17.5926,11.4,523.0,648,"11.4 s +- 523 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
 ",fiqa: BM25 >> e5-small-v2,e5-small
-nfcorpus,BM25 >> e5-small-v2,6.9659,2.25,131.0,323,"2.25 s +- 131 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+nfcorpus,BM25 >> e5-small-v2,6.5944,2.13,180.0,323,"2.13 s +- 180 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
 ",nfcorpus: BM25 >> e5-small-v2,e5-small
-scifact,BM25 >> e5-small-v2,20.2667,6.08,349.0,300,"6.08 s +- 349 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+scifact,BM25 >> e5-small-v2,19.9333,5.98,140.0,300,"5.98 s +- 140 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
 ",scifact: BM25 >> e5-small-v2,e5-small
 fiqa,BM25 >> gte-base-en-v1.5,43.3642,28.1,2110.0,648,"28.1 s +- 2.11 s per loop (mean +- std. dev. of 7 runs, 1 loop each)
 ",fiqa: BM25 >> gte-base-en-v1.5,gte-base
@@ -43,15 +43,15 @@ scifact,BM25 >> nomic-embed-text-v1,60.0,18.0,211.0,300,"18 s +- 211 ms per loop
 ",scifact: BM25 >> nomic-embed-text-v1,nomic
 fiqa,BM25 >> snowflake-arctic-embed-m,44.5988,28.9,2790.0,648,"28.9 s +- 2.79 s per loop (mean +- std. dev. of 7 runs, 1 loop each)
 ",fiqa: BM25 >> snowflake-arctic-embed-m,arctic-m
-nfcorpus,BM25 >> snowflake-arctic-embed-m,5.5728,1.8,154.0,323,"1.8 s +- 154 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+nfcorpus,BM25 >> snowflake-arctic-embed-m,20.3715,6.58,289.0,323,"6.58 s +- 289 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
 ",nfcorpus: BM25 >> snowflake-arctic-embed-m,arctic-m
-scifact,BM25 >> snowflake-arctic-embed-m,14.7667,4.43,177.0,300,"4.43 s +- 177 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+scifact,BM25 >> snowflake-arctic-embed-m,51.3333,15.4,1050.0,300,"15.4 s +- 1.05 s per loop (mean +- std. dev. of 7 runs, 1 loop each)
 ",scifact: BM25 >> snowflake-arctic-embed-m,arctic-m
 fiqa,BM25 >> snowflake-arctic-embed-xs,13.7963,8.94,192.0,648,"8.94 s +- 192 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
 ",fiqa: BM25 >> snowflake-arctic-embed-xs,arctic-xs
-nfcorpus,BM25 >> snowflake-arctic-embed-xs,5.6656,1.83,108.0,323,"1.83 s +- 108 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+nfcorpus,BM25 >> snowflake-arctic-embed-xs,5.3251,1.72,104.0,323,"1.72 s +- 104 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
 ",nfcorpus: BM25 >> snowflake-arctic-embed-xs,arctic-xs
-scifact,BM25 >> snowflake-arctic-embed-xs,14.9,4.47,163.0,300,"4.47 s +- 163 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+scifact,BM25 >> snowflake-arctic-embed-xs,14.3667,4.31,134.0,300,"4.31 s +- 134 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
 ",scifact: BM25 >> snowflake-arctic-embed-xs,arctic-xs
 fiqa,BM25 >> tct_colbert_msmarco,47.9938,31.1,2650.0,648,"31.1 s +- 2.65 s per loop (mean +- std. dev. of 7 runs, 1 loop each)
 ",fiqa: BM25 >> tct_colbert_msmarco,tct-colbert

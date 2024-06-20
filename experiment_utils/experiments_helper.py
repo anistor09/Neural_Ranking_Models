@@ -1,6 +1,6 @@
 import pyterrier as pt
 # from fast_forward import OnDiskIndex, Mode
-from fast_forward import Mode
+from fast_forward_indexes_library_enhancements import Mode
 from pathlib import Path
 from fast_forward.util.pyterrier import FFScore
 import time
@@ -356,15 +356,27 @@ def time_fct(func, *args, **kwargs):
     return result
 
 
-def latency_per_query(timeit_output, dataset_name, test_suffix, pipeline_name, model_directory):
-    text_input = timeit_output.split(" s +- ")
+def latency_per_query(timeit_output, dataset_name, test_suffix, pipeline_name, model_directory,
+                      result_filename=""):
+    # text_input = timeit_output.split(" s +- ")
+    # x = timeit_output.split(" ")
 
-    mean_time = float(text_input[0])
+    if timeit_output.split(" ")[1] == "ms":
+        text_input = timeit_output.split(" ms +- ")
+        mean_time = float(text_input[0]) * 0.001
+    else:
+        text_input = timeit_output.split(" s +- ")
+        mean_time = float(text_input[0])
+
+    # mean_time = float(text_input[0])
     print(timeit_output)
     try:
         standard_dev_time = float(text_input[1].split(" ms")[0])
     except Exception as e:
-        standard_dev_time = float(text_input[1].split(" s")[0]) * 1000
+        try:
+            standard_dev_time = float(text_input[1].split(" s")[0]) * 1000
+        except Exception as e:
+            standard_dev_time = float(text_input[1].split(" us")[0]) * 0.001
 
     len_topics = len(pt.get_dataset(dataset_name + test_suffix).get_topics())
     mean_time_per_query = mean_time / len_topics
@@ -373,14 +385,14 @@ def latency_per_query(timeit_output, dataset_name, test_suffix, pipeline_name, m
     mean_time_per_query = mean_time_per_query * 1000
     mean_time_per_query = round(mean_time_per_query, 4)
     store_latency(dataset_name, pipeline_name, mean_time_per_query, mean_time, standard_dev_time, len_topics,
-                  timeit_output, model_directory)
+                  timeit_output, model_directory, result_filename)
     return "Latency per query: " + str(mean_time_per_query) + " ms. " + "Experiment details: " + timeit_output
 
 
 def store_latency(dataset_name, pipeline_name, mean_time_per_query, exp_mean_time, standard_dev_time, len_topics,
-                  timeit_output, model_directory):
+                  timeit_output, model_directory, result_filename):
     path_to_root = os.path.abspath(os.getcwd())
-    file_path = path_to_root + '/../../' + model_directory + '/results/latency_data.csv'
+    file_path = path_to_root + '/../../' + model_directory + '/results/' + result_filename + "latency" '_data.csv'
 
     data = {
         'dataset': [get_dataset_name(dataset_name)],

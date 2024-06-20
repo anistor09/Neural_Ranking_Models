@@ -3,11 +3,13 @@ nfcorpus,BM25 >> bge-base-en-v1.5,18.7926,6.07,146.0,323,"6.07 s +- 146 ms per l
 ",nfcorpus: BM25 >> bge-base-en-v1.5
 scifact,BM25 >> bge-base-en-v1.5,49.0,14.7,359.0,300,"14.7 s +- 359 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
 ",scifact: BM25 >> bge-base-en-v1.5
-nfcorpus,BM25 >> bge-small-en-v1.5,8.0495,2.6,101.0,323,"2.6 s +- 101 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
-",nfcorpus: BM25 >> bge-small-en-v1.5
 fiqa,BM25 >> bge-small-en-v1.5,18.5185,12.0,479.0,648,"12 s +- 479 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
 ",fiqa: BM25 >> bge-small-en-v1.5
 scifact,BM25 >> bge-small-en-v1.5,20.9667,6.29,187.0,300,"6.29 s +- 187 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
 ",scifact: BM25 >> bge-small-en-v1.5
 fiqa,BM25 >> bge-base-en-v1.5,41.2037,26.7,1020.0,648,"26.7 s +- 1.02 s per loop (mean +- std. dev. of 7 runs, 1 loop each)
 ",fiqa: BM25 >> bge-base-en-v1.5
+nfcorpus,BM25 >> bge-small-en-v1.5,7.9567,2.57,126.0,323,"2.57 s +- 126 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+"
+fiqa,BM25 >> bge-small-en-v1.5,18.6728,12.1,299.0,648,"12.1 s +- 299 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+"

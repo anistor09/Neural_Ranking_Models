@@ -1,0 +1,7 @@
+dataset,pipeline_name,mean_time_per_query (ms),exp_time (s),standard_dev_time (ms),nr_queries,timeit_details
+fiqa,BM25 >> nomic-embed-text-v1,0.25,0.162,3.33,648,"162 ms +- 3.33 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+"
+nfcorpus,BM25 >> nomic-embed-text-v1,0.0203,0.00657,0.0437,323,"6.57 ms +- 43.7 us per loop (mean +- std. dev. of 7 runs, 100 loops each)
+"
+scifact,BM25 >> nomic-embed-text-v1,0.0407,0.012199999999999999,1.84,300,"12.2 ms +- 1.84 ms per loop (mean +- std. dev. of 7 runs, 100 loops each)
+"
