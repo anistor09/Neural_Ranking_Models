@@ -114,20 +114,13 @@ def run_metrics_tct_colbert():
 
 
 if __name__ == '__main__':
-    run_metrics_tct_colbert()
-    print("TCT Colbert done")
 
-    run_metrics_gte()
-    print("GTE DONE")
-
-    run_metrics_snowflake()
-    print("Snowflake DONE")
-
-    run_metrics_bge()
-    print("BGE DONE")
+    run_metrics_nomic()
+    print("Nomic DONE")
 
     run_metrics_e5()
     print("E5 DONE")
 
-    run_metrics_nomic()
-    print("Nomic DONE")
+    run_metrics_bge()
+    print("BGE DONE")
+

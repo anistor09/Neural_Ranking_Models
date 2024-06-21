@@ -1,0 +1,11 @@
+Model,RR@10,nDCG@10
+tct-colbert,,
+gte-base,,f
+bge-base,,f
+arctic-m,abcfgi,abcefi
+e5-base,acfi,abcfi
+e5-base-pt,,
+nomic,,abcfi
+bge-small,,f
+arctic-xs,,f
+e5-small,,af

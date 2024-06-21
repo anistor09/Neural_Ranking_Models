@@ -159,6 +159,7 @@ def remove_duplicated_results(input_files):
         print("AFTER REMOVING DUPLICATES")
         print(unique_dataframe)
 
+
 bm25_values_rr = {
     "passage": 0.7944,
     "nfcorpus": 0.5344,
@@ -181,6 +182,10 @@ bm25_values_ndcg = {
     "scifact": 0.6722
 }
 
+best_ndcg = [0.7137, 0.3649, 0.7307, ]
+best_rr = []
+
+
 def create_latex_table(target_value):
     models = ["BM25", "tct-colbert", "gte-base", "bge-base", "arctic-m", "e5-base", "e5-base-pt", "nomic", "bge-small",
               "arctic-xs", "e5-small"]
@@ -190,12 +195,18 @@ def create_latex_table(target_value):
 
     ranking_results_path = path_to_root + "/results/" + "aggreagated_ranking_results.csv"
 
+    signifiance_path = path_to_root + "/results/significance_reports/extracted_signifiance_relations"
+
     df = pd.read_csv(ranking_results_path)
 
     for dataset in datasets:
+        df_signfiance = None
+        if 'fever' not in dataset:
+            df_signfiance = pd.read_csv(signifiance_path + "/" + dataset + '.csv')
         row = dataset + " & "
-        # print(dataset)
+
         for model in models:
+            is_max = False
             if model == "BM25":
                 if target_value == "RR@10":
                     value = bm25_values_rr[dataset]
@@ -207,12 +218,32 @@ def create_latex_table(target_value):
             else:
 
                 try:
+                    max_val = df[(df['dataset'] == dataset)][target_value].max()
+
                     value = df[(df['model'] == model) & (df['dataset'] == dataset)][target_value].iloc[0]
+
+                    if value == max_val:
+                        is_max = True
+
                 except Exception as e:
                     value = "-"
-
-                # value = float(value)
             value = str(value)
+            if is_max:
+                value = "\\col{" + value + "}"
+
+            filtered_df = None
+
+            if df_signfiance is not None:
+                filtered_df = df_signfiance[(df_signfiance['Model'] == model)]
+            sig = None
+
+            if filtered_df is not None and not filtered_df.empty:
+                # print(dataset + " " + model + " " + filtered_df[target_value])
+                sig = filtered_df[target_value].iloc[0]
+
+            if sig is not None and pd.notna(sig) and 'a' in sig:
+                value = "\\textbf{" + value + "}"
+
             row += value + " & "
         row = row[:-2]
         row += " \\\\" + " \n"
@@ -241,5 +272,5 @@ if __name__ == '__main__':
     #
     # merge_latency_parts_aggregations()
 
-    extracted_value = "nDCG@10"
+    extracted_value = "RR@10"
     create_latex_table(extracted_value)

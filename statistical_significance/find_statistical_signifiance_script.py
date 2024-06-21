@@ -3,20 +3,20 @@ from pathlib import Path
 import os
 from ranx import compare, Run, Qrels
 
-# datasets_names = ['fiqa', 'nfcorpus', 'scifact', 'quora', 'hotpotqa', 'dbpedia', 'fever', 'msmarco-passage']
+# datasets_names = ['passage', 'nfcorpus', 'hotpotqa', 'fiqa', 'quora', 'dbpedia', 'fever', 'scifact']
 
-datasets_names = ['nfcorpus']
+datasets_names = ['fever']
 
-models = ["bge-base-en-v1.5",
-          "bge-small-en-v1.5",
-          "e5-base-unsupervised",
-          "e5-base-v2",
-          "e5-small-v2",
+models = ["tct_colbert_msmarco",
           "gte-base-en-v1.5",
-          "nomic-embed-text-v1",
+          "bge-base-en-v1.5",
           "snowflake-arctic-embed-m",
+          "e5-base-v2",
+          "e5-base-unsupervised",
+          "nomic-embed-text-v1",
+          "bge-small-en-v1.5",
           "snowflake-arctic-embed-xs",
-          "tct_colbert_msmarco"]
+          "e5-small-v2"]
 
 
 def main():
@@ -26,27 +26,37 @@ def main():
 
     for dataset_name in datasets_names:
 
-        path = os.path.abspath(os.getcwd()) + "/results/trec_runs/" + dataset_name + "/"
+        try:
 
-        runs = []
-        for model_name in models:
-            run_files = Run.from_file(Path(path + model_name + ".trec").resolve().as_posix())
+            path = os.path.abspath(os.getcwd()) + "/results/trec_runs/" + dataset_name + "/"
 
-            runs.append(run_files)
+            runs = []
+            for model_name in models:
+                run_files = Run.from_file(Path(path + model_name + ".trec").resolve().as_posix())
 
-    if "msmarco" not in dataset_name:
-        qrels = pt.get_dataset(f'irds:beir/{dataset_name}/test').get_qrels()
-    else:
-        qrels = pt.get_dataset('irds:msmarco-passage/trec-dl-2019').get_qrels()
+                runs.append(run_files)
 
-    qrels = Qrels.from_df(qrels, q_id_col='qid', doc_id_col='docno', score_col='label')
+            if "passage" not in dataset_name:
+                qrels = pt.get_dataset(f'irds:beir/{dataset_name}/test').get_qrels()
+            else:
+                qrels = pt.get_dataset('irds:msmarco-passage/trec-dl-2019').get_qrels()
 
-    report = compare(qrels, runs, metrics=["mrr@10", "ndcg@10"], max_p=0.05,
-                     stat_test='student', make_comparable=True)
+            qrels = Qrels.from_df(qrels, q_id_col='qid', doc_id_col='docno', score_col='label')
 
-    print(report)
+            report = compare(qrels, runs, metrics=["mrr@10", "ndcg@10"], max_p=0.05,
+                             stat_test='student', make_comparable=True)
 
-    report.save(path + "/../../significance_reports/" + dataset_name + ".json")
+            output_path = path + "/../../significance_reports/" + dataset_name
+
+            with open(output_path + '.txt', 'w') as file:
+                file.write(str(report))
+
+            report.save(output_path + ".json")
+
+            print(dataset_name + " DONE")
+        except Exception as e:
+            # Handles any other exceptions
+            print(f"An error occurred: {e}")
 
 
 if __name__ == '__main__':
