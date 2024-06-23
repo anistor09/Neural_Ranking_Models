@@ -57,13 +57,12 @@ def process_data(filename):
     return df
 
 
-datasets_names = ['passage', 'nfcorpus', 'hotpotqa', 'fiqa', 'quora', 'dbpedia-entity', 'scifact']
+datasets_names = ['passage', 'nfcorpus', 'hotpotqa', 'fiqa', 'quora', 'dbpedia-entity', 'scifact', 'fever']
 
 
 def main():
     for dataset_name in datasets_names:
         path = os.path.abspath(os.getcwd()) + "/results/significance_reports/"
-        # dataset_name = "fiqa"
 
         df = process_data(path + dataset_name + '.txt')
         df.to_csv(path + 'extracted_signifiance_relations/' + dataset_name + '.csv', index=False)

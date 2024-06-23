@@ -201,8 +201,8 @@ def create_latex_table(target_value):
 
     for dataset in datasets:
         df_signfiance = None
-        if 'fever' not in dataset:
-            df_signfiance = pd.read_csv(signifiance_path + "/" + dataset + '.csv')
+
+        df_signfiance = pd.read_csv(signifiance_path + "/" + dataset + '.csv')
         row = dataset + " & "
 
         for model in models:
@@ -227,9 +227,8 @@ def create_latex_table(target_value):
 
                 except Exception as e:
                     value = "-"
-            value = str(value)
-            if is_max:
-                value = "\\col{" + value + "}"
+
+            value = "\\num{" + str(value) + "}"
 
             filtered_df = None
 
@@ -242,11 +241,14 @@ def create_latex_table(target_value):
                 sig = filtered_df[target_value].iloc[0]
 
             if sig is not None and pd.notna(sig) and 'a' in sig:
-                value = "\\textbf{" + value + "}"
+                value = value + "\\sigimpr{}"
+
+            if is_max:
+                value = "\\col{" + value + "}"
 
             row += value + " & "
         row = row[:-2]
-        row += " \\\\" + " \n"
+        row += " \\\\" + " \n\n"
         latex_table += row
 
     print(latex_table)

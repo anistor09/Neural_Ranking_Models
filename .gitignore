@@ -14,4 +14,4 @@ scaffolding/index
 #/sparse_indexes/
 #/e5/dense_indexes/
 #/nomic/dense_indexes/
-/results/trec_runs/
+#/results/trec_runs/
