@@ -4,7 +4,7 @@ from general_dense_indexers.dense_index_one_dataset import index_collection
 from fast_forward.encoder import TCTColBERTQueryEncoder, TCTColBERTDocumentEncoder
 
 
-def index_tct_colbert_collection(dataset_name, max_id_length, directory, model_name):
+def index_castorini_collection(dataset_name, max_id_length, directory, model_name):
     q_encoder = TCTColBERTQueryEncoder("castorini/" + model_name)
     d_encoder = TCTColBERTDocumentEncoder(
         "castorini/" + model_name,
@@ -14,9 +14,9 @@ def index_tct_colbert_collection(dataset_name, max_id_length, directory, model_n
                      mode=Mode.MAXP)
 
 
-def index_castorini_collection(dataset_name, max_id_length, directory):
+def index_tct_colbert(dataset_name, max_id_length, directory):
     model_name = "tct_colbert-msmarco"
-    index_tct_colbert_collection(dataset_name, max_id_length, directory, model_name)
+    index_castorini_collection(dataset_name, max_id_length, directory, model_name)
 
 
 def main():
@@ -25,7 +25,7 @@ def main():
     directory = "tct_colbert"
 
     try:
-        index_castorini_collection(dataset_name, max_id_length, directory)
+        index_tct_colbert(dataset_name, max_id_length, directory)
 
     except Exception as e:
         # Handles any other exceptions
