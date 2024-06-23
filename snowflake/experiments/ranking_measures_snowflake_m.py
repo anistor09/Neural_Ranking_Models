@@ -4,6 +4,14 @@ from func_timeout import func_timeout
 
 
 def get_datasets():
+    """
+        Constructs a list of full dataset paths by merging a prefix with dataset names and respective suffixes.
+
+        Returns:
+        list: A list of complete dataset paths for both development and test phases, with custom modifications for
+              specific datasets.
+
+    """
     prefix = "irds:"
 
     dataset_names = ["beir/dbpedia-entity",
@@ -22,6 +30,10 @@ def get_datasets():
 
 
 def main():
+    """
+        Main function to execute ranking performance evaluation for the Snowflake medium model. It sets a timeout for
+        the entire ranking process for easier debugging on the SuperComputer.
+    """
     package = "Snowflake/"
     model_name = "snowflake-arctic-embed-m"
     q_encoder = SnowFlakeQueryEncoder(package + model_name)

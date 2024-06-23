@@ -12,6 +12,9 @@ lengths.append(7)
 
 
 def index_snowflake_m_collections():
+    """
+       This function indexes multiple datasets using the 'snowflake-arctic-embed-m' model.
+    """
     for index, dataset_name in enumerate(datasets):
         try:
             index_snowflake_m_collection(dataset_name, lengths[index], directory)
@@ -20,7 +23,11 @@ def index_snowflake_m_collections():
             # Handles any other exceptions
             print(f"An error occurred: {e}")
 
+
 def index_snowflake_xs_collections():
+    """
+        This function indexes multiple datasets using the 'snowflake-arctic-embed-xs' model.
+     """
     for index, dataset_name in enumerate(datasets):
         try:
             index_snowflake_xs_collection(dataset_name, lengths[index], directory)
@@ -31,6 +38,10 @@ def index_snowflake_xs_collections():
 
 
 def main():
+    """
+       Main function that executes the indexing of multiple datasets with Snowflake xs model. It sets a timeout for the
+           entire indexing process for easier debugging on the SuperComputer.
+    """
     try:
         func_timeout(24 * 3600 - 120, index_snowflake_xs_collections)
     except Exception as e:
