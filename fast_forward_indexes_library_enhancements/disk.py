@@ -20,7 +20,12 @@ class OnDiskIndex(Index):
 
     Uses HDF5 via h5py under the hood. The buffer (ds_buffer_size) works around a h5py limitation.
     More information: https://docs.h5py.org/en/latest/high/dataset.html#fancy-indexing
+
+    This Class is copied from the Fast-Forward library but small
+    modification are made to make handling of utf encoded docnos possible.
     """
+
+
 
     def __init__(
             self,

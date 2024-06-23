@@ -4,17 +4,18 @@ import ast
 
 
 class EncodeUTF(pt.Transformer):
-    """PyTerrier transformer that interpolates scores computed by `FFScore`."""
+    """PyTerrier transformer that translates docnos from string utf encoding to correct String. In this stage
+    words with characters such as è, é, ê, ë  are rebuilt. For example, the string utf encoding of
+    Compté (Compt\xc3\xa9) will be transformed back to Compté."""
 
     def transform(self, df: pd.DataFrame) -> pd.DataFrame:
-        """Interpolate the scores for all query-document pairs in the data frame as
-        `alpha * score_0 + (1 - alpha) * score`.
+        """Translates docnos from string utf encoding to correct String`.
 
         Args:
             df (pd.DataFrame): The PyTerrier data frame.
 
         Returns:
-            pd.DataFrame: A new data frame with the interpolated scores.
+            pd.DataFrame: A new data frame with the transformed docno.
         """
 
         df["docno"] = df['docno'].apply(lambda x: ast.literal_eval(x).decode("utf-8"))
@@ -22,7 +23,7 @@ class EncodeUTF(pt.Transformer):
 
 
 class FFInterpolateNormalized(pt.Transformer):
-    """PyTerrier transformer that interpolates scores computed by `FFScore`."""
+    """PyTerrier transformer that interpolates scores computed by lexical and dense retrievers."""
 
     def __init__(self, alpha: float) -> None:
         """Create an FFInterpolate transformer.
@@ -36,7 +37,7 @@ class FFInterpolateNormalized(pt.Transformer):
 
     def transform(self, df: pd.DataFrame) -> pd.DataFrame:
         """Interpolate the scores for all query-document pairs in the data frame as
-        `alpha * score_0 + (1 - alpha) * score`.
+        `alpha * score_0 + (1 - alpha) * score. Before interpolation, the sparse and dense scores are NORMALIZED`.
 
         Args:
             df (pd.DataFrame): The PyTerrier data frame.

@@ -11,7 +11,9 @@ LOGGER = logging.getLogger(__name__)
 
 
 class InMemoryIndex(Index):
-    """Fast-Forward index that is held entirely in memory."""
+    """Fast-Forward index that is held entirely in memory. This Class is copied from the Fast-Forward library but small
+    modification are made regarding the encapsulation of the code in order to make the latency experiments possible for
+    the document retrival phases within the semantic re-ranking."""
 
     def __init__(
             self,
