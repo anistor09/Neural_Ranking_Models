@@ -2,7 +2,7 @@
 
 #SBATCH --job-name="e5_base_multiple"
 #SBATCH --time=10:00:00
-#SBATCH --partition=gpu-a100
+#SBATCH --partition=gpu-a100 # GPU usage is useful for dense indexing as it makes the process much faster than on CPU
 #SBATCH --gpus-per-task=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2

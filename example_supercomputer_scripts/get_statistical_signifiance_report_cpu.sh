@@ -2,10 +2,10 @@
 
 #SBATCH --job-name="find_statistical_signifiance"
 #SBATCH --time=15:00:00
-#SBATCH --partition=compute-p2
+#SBATCH --partition=compute-p2 # GPU is not needed anything runs with CUDA
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
-#SBATCH --mem-per-cpu=64G
+#SBATCH --mem-per-cpu=64G # High memory usage, it fails with 16 G RAM on local machine
 #SBATCH --account=Education-EEMCS-Courses-CSE3000
 
 module load 2023r1
