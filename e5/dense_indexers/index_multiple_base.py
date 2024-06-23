@@ -3,6 +3,10 @@ from e5.dense_indexers.dense_index_multiple_datasets import index_e5_base_collec
 
 
 def main():
+    """
+          Main function to execute the indexing of datasets with E5 base (finetuned version). It sets a timeout for
+          the entire indexing process for easier debugging on the SuperComputer.
+     """
     try:
         func_timeout(24 * 3600 - 15 * 60, index_e5_base_collections)
     except Exception as e:
