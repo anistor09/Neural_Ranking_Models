@@ -2,6 +2,10 @@ from fast_forward import Ranking
 
 
 def preprocess_data(first_stage_results):
+    """
+        Helper method for retrieving that preprocesses the first_stage results and prepares the dataframe for the second
+        stage. Used for running the query per latency breakdown.
+    """
     ranking = Ranking(
         first_stage_results.rename(columns={"qid": "q_id", "docno": "id"}),
         copy=False,
