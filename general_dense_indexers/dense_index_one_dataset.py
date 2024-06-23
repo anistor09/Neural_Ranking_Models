@@ -6,15 +6,24 @@ import re
 
 
 def docs_iter(dataset):
+    """
+        Generates a dictionary for each document in the dataset with utf encoded version of 'doc_id' and 'text' keys.
+    """
     for d in dataset.get_corpus_iter():
         yield {"doc_id": d["docno"].encode("utf-8"), "text": d["text"]}
 
 
 def format_name(text):
+    """
+       Formats the model name to exclude characters not compliant with Python filenaming rules.
+    """
     return re.sub(r'[:/.-]', '_', text)
 
 
 def get_dataset_name(text):
+    """
+          Get the dataset name given the ir-datasets path.
+    """
     parts = re.split('[:/-]', text)
 
     if len(parts) > 2:
@@ -32,6 +41,11 @@ def get_dataset_name(text):
 
 def index_collection(dataset_name, model_name, q_encoder, d_encoder, max_id_length, directory, batch_size=8, dim=768,
                      mode=Mode.MAXP):
+    """
+        Sets up and executes the indexing of a dataset using specified encoders and parameters.
+        It initializes the PyTerrier, checks for CUDA availability, and handles the indexing process. The document
+        encoding happens on CUDA if available.
+    """
     if not pt.started():
         pt.init(tqdm="notebook")
 

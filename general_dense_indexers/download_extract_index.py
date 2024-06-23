@@ -8,14 +8,24 @@ from fast_forward import OnDiskIndex
 
 # Function to get the full project path dynamically
 def get_project_path():
+    """
+       Retrieves the absolute path to the current working directory.
+    """
     return os.path.abspath(os.getcwd())
 
 
 def get_filename(url):
+    """
+       Extracts the filename from the Pyserini URL, typically used to isolate the file name from its web path
+       for local storage operations.
+    """
     return url.split('/')[-1]
 
 
 def transform_index_to_h5(old_file_dir, new_index_path, index_filename, index_dimension=768):
+    """
+        Transforms an index from FAISS to H5.
+    """
     index = faiss.read_index(old_file_dir + "/index")
     with open(old_file_dir + "/docid") as fp:
         docids = list(fp.read().splitlines())
@@ -25,6 +35,10 @@ def transform_index_to_h5(old_file_dir, new_index_path, index_filename, index_di
 
 
 def download_index(model_directory, path_to_root, url, index_filename):
+    """
+       Handles the downloading, extraction, and clean-up of an index file from Pyserini.
+
+    """
     # Define the base path for operations
     base_path = os.path.join(get_project_path(), path_to_root, model_directory, "dense_indexes")
 
@@ -62,6 +76,9 @@ def download_index(model_directory, path_to_root, url, index_filename):
 
 
 def main():
+    """
+       Main function to initiate the process of index downloading and transformation to H5 index.
+    """
     model_directory = "bge"
 
     # if run from project root path-to_root = ""
