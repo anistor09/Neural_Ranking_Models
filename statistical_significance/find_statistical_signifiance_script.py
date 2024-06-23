@@ -3,9 +3,7 @@ from pathlib import Path
 import os
 from ranx import compare, Run, Qrels
 
-# datasets_names = ['passage', 'nfcorpus', 'hotpotqa', 'fiqa', 'quora', 'dbpedia', 'fever', 'scifact']
-
-datasets_names = ['fever']
+datasets_names = ['passage', 'nfcorpus', 'hotpotqa', 'fiqa', 'quora', 'dbpedia', 'fever', 'scifact', 'fever']
 
 models = ["tct_colbert_msmarco",
           "gte-base-en-v1.5",
