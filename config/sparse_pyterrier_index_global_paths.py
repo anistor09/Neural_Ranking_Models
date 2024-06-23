@@ -1,1 +1,0 @@
-MSMARCO_PASSAGE_TERRIER_STEMMED_PATH = "/home/anistor/.pyterrier/corpora/msmarco_passage/index/terrier_stemmed"
