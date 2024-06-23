@@ -7,6 +7,9 @@ prefix_dataset = "irds:beir/"
 
 
 def index_multiple(prefix_dataset, datasets, lengths):
+    """
+        Creates and stores the SPARSE index for each dataset/
+    """
     for index, dataset_name in enumerate(datasets):
         try:
             index_one(prefix_dataset, dataset_name, lengths[index])
