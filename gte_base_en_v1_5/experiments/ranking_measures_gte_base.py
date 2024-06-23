@@ -4,6 +4,12 @@ from func_timeout import func_timeout
 
 
 def get_datasets():
+    """
+        Constructs a list of full dataset paths by merging a prefix with dataset names and respective suffixes.
+
+        Returns:
+        list: A list of complete dataset paths with the appropriate suffixes for development and testing phases.
+    """
     prefix = "irds:"
 
     dataset_names = [
@@ -21,6 +27,12 @@ def get_datasets():
 
 
 def main():
+    """
+    Executes ranking performance measurement for gte_base_en_v1_5  by encoding queries and evaluating ranking performance.
+
+    Args:
+    model_name (str): The model identifier used for query encoding.
+    """
     package = "Alibaba-NLP/"
     model_name = "gte-base-en-v1.5"
     q_encoder = GTEBaseEncoder(package + model_name)

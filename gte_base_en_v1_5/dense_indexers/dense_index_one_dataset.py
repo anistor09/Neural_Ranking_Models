@@ -5,6 +5,20 @@ from encoders.gte_base_en_encoder import GTEBaseEncoder
 
 
 def index_gte_collection(dataset_name, max_id_length, directory, model_name):
+    """
+         Indexes a dataset using the GTEBaseEncoder for both query and document encoders.
+
+         Args:
+         dataset_name (str): The name of the dataset to index.
+         max_id_length (int): Maximum length of the IDs in the dataset.
+         directory (str): Directory to store the indexed files.
+         model_name (str): Name of the model used for encoding.
+
+         Details:
+         Uses the GTEBaseEncoder from Alibaba-NLP with the specified model. If available, uses GPU for document encoding
+         , otherwise defaults to CPU.
+         """
+
     q_encoder = GTEBaseEncoder("Alibaba-NLP/" + model_name)
     d_encoder = GTEBaseEncoder(
         "Alibaba-NLP/" + model_name,
@@ -15,6 +29,14 @@ def index_gte_collection(dataset_name, max_id_length, directory, model_name):
 
 
 def index_gte_base_collection(dataset_name, max_id_length, directory):
+    """
+      Indexes a dataset using the 'gte-base-en-v1.5' model.
+
+      Args:
+      dataset_name (str): The name of the dataset to index.
+      max_id_length (int): Maximum length of the IDs in the dataset.
+      directory (str): Directory to store the indexed files.
+      """
     model_name = "gte-base-en-v1.5"
     index_gte_collection(dataset_name, max_id_length, directory, model_name)
 
