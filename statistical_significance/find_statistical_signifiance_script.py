@@ -3,7 +3,7 @@ from pathlib import Path
 import os
 from ranx import compare, Run, Qrels
 
-datasets_names = ['passage', 'nfcorpus', 'hotpotqa', 'fiqa', 'quora', 'dbpedia', 'fever', 'scifact', 'fever']
+datasets_names = ['passage']
 
 models = ["tct_colbert_msmarco",
           "gte-base-en-v1.5",
@@ -41,12 +41,15 @@ def main():
                 qrels = pt.get_dataset(f'irds:beir/{dataset_name}/test').get_qrels()
             else:
                 qrels = pt.get_dataset('irds:msmarco-passage/trec-dl-2019').get_qrels()
+                qrels.loc[qrels['label'] < 2, 'label'] = 0 # Minimum relavance is 2 in Trec Dl Eval set
+
 
             qrels = Qrels.from_df(qrels, q_id_col='qid', doc_id_col='docno', score_col='label')
 
             # Compare runs using the specified metrics and significance testing.
             report = compare(qrels, runs, metrics=["mrr@10", "ndcg@10"], max_p=0.05,
                              stat_test='student', make_comparable=True)
+            print(report)
 
             output_path = path + "/../../significance_reports/" + dataset_name
 
