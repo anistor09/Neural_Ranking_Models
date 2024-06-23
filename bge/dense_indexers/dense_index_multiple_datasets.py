@@ -7,7 +7,7 @@ lengths = [200, 221, 6, 8, 8, 6, 9]  # Specific maximum ID lengths for each data
 prefix_dataset = "irds:beir/"  # Prefix to form full dataset paths
 directory = "bge"  # Directory to store indexed files
 
-# Combining prefix with dataset names for full identifiers and adding an additional dataset
+# Combining prefix with dataset names for full identifiers and adding an MS MARCO dataset
 
 datasets = [prefix_dataset + dataset for dataset in beir_datasets]
 datasets.append("irds:msmarco-passage/trec-dl-2019")
