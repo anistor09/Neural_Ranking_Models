@@ -1,6 +1,4 @@
-import pandas as pd
 import os
-import pyterrier as pt
 
 
 def get_file_path(dir):
@@ -12,21 +10,31 @@ def get_file_path_beir(dataset):
 
 
 def get_relevant_queries_per_doc(file_path, separator, min_rellevance, description):
+    """
+     Calculate and print the average number of relevant documents per query from a given  (dataset).
+
+     Args:
+     file_path (str): Path to the dataset file.
+     separator (str): Character used to split data lines into parts.
+     min_rellevance (int): Minimum relevance score to consider a document relevant.
+     description (str): Description of the dataset being processed.
+     """
+
     with open(file_path, 'r') as file:
         # Skip the header if there is one
-
         query_rel_docs = {}
         next(file)
-        # Read each line in the file
+
         for line in file:
 
             parts = line.strip().split(separator)
 
-            # Ensure line has all parts needed
+            # Check if the line has the correct number of parts
             if len(parts) >= 4:
                 query_id, query_type, doc_id, relevance = parts
                 relevance = int(relevance)  # Convert relevance to integer
 
+                # Store or increment the count if relevance meets the threshold
                 if relevance >= min_rellevance:
                     if query_id not in query_rel_docs:
                         query_rel_docs[query_id] = 1
@@ -44,7 +52,7 @@ def get_relevant_queries_per_doc(file_path, separator, min_rellevance, descripti
                     else:
                         query_rel_docs[query_id] += 1
             else:
-                print(parts)
+                print(parts)  # Output the incomplete parts for debugging
 
         x = 0.0
         for query_id in query_rel_docs.keys():
@@ -58,6 +66,8 @@ def get_relevant_queries_per_doc(file_path, separator, min_rellevance, descripti
 
 
 if __name__ == '__main__':
+
+    # Process MSMARCO dev and TREC evaluation datasets
     dev_qrels_location = get_file_path("dev")
 
     get_relevant_queries_per_doc(dev_qrels_location, "\t", 1, "msmarco/dev")
@@ -65,6 +75,7 @@ if __name__ == '__main__':
     trec_qrels_location = get_file_path("trec-dl-2019")
     get_relevant_queries_per_doc(trec_qrels_location, " ", 2, "trec-dl-2019")
 
+    # Process BEIR datasets, including beir/msmarco
     datasets = ['msmarco', 'quora', 'fever']
 
     for dataset in datasets:

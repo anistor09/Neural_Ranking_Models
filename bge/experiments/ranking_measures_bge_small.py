@@ -4,6 +4,13 @@ from encoders.bge_base_en import BgeQueryEncoder
 
 
 def get_datasets():
+    """
+    Generates a list of dataset identifiers with prefixes and specific suffixes for different dataset sections.
+
+    Returns:
+    list: A list of full dataset identifiers with prefixed sources and respective development or test section suffixes.
+    """
+
     prefix = "irds:"
 
     dataset_names = [
@@ -21,6 +28,12 @@ def get_datasets():
 
 
 def main():
+    """
+    Main function to run ranking performance metrics for the BGE small model.
+
+    Encodes queries using BGE small model and evaluates the ranking performance across multiple datasets.
+    """
+
     package = "BAAI/"
     model_name = "bge-small-en-v1.5"
     q_encoder = BgeQueryEncoder(package + model_name)
