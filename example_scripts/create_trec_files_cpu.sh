@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name="cpu_metrics_e5_base_unsupervised"
+#SBATCH --job-name="cpu_metrics_nomic"
 #SBATCH --time=05:00:00
 #SBATCH --partition=compute-p2
 #SBATCH --ntasks=1
@@ -25,5 +25,5 @@ python -m pip install --user python-terrier==0.10.0 fast-forward-indexes==0.2.0 
 
 
 # Run the experiment
-srun python -m e5.experiments.ranking_measures_e5_base_unsupervised > ranking_measures_e5_base_unsupervised_status.txt
+srun python -m statistical_significance.all_models_and_datasets.save_trec_files > statistical_cpu_status.txt
 
