@@ -55,4 +55,5 @@ class SnowFlakeQueryEncoder(SnowFlakeDocumentEncoder):
         """
         query_prefix = 'Represent this sentence for searching relevant passages: '
         queries_with_prefix = ["{}{}".format(query_prefix, i) for i in queries]
+
         return self.encode(queries_with_prefix)
