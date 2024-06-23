@@ -1,23 +1,22 @@
 import pyterrier as pt
-# from fast_forward import OnDiskIndex, Mode
 from fast_forward_indexes_library_enhancements import Mode
 from pathlib import Path
 from fast_forward.util.pyterrier import FFScore
 import time
-from fast_forward.util.pyterrier import FFInterpolate
 from pyterrier.measures import RR, nDCG, MAP
 import os
 import pandas as pd
 from fast_forward_indexes_library_enhancements.pipeline_transformers import FFInterpolateNormalized, EncodeUTF
 from fast_forward_indexes_library_enhancements.disk import OnDiskIndex
 from general_dense_indexers.dense_index_one_dataset import get_dataset_name, format_name
-import re
 import traceback
 
 SEED = 42
 eval_metrics = [RR @ 10, nDCG @ 10, MAP @ 100]
 eval_metrics_general = [RR @ 10, nDCG @ 10, MAP @ 100]
 eval_metrics_msmarco = [RR(rel=2) @ 10, nDCG @ 10, MAP(rel=2) @ 100]
+
+save_trec_files_only = False
 
 
 def load_sparse_index_from_disk(dataset_name, path_to_root, in_memory=True, wmodel="BM25", index_path=None):
@@ -51,7 +50,7 @@ def load_dense_index_from_disk(dataset_name, query_encoder, model_name, path_to_
 
 
 def find_optimal_alpha(pipeline_no_interpolation, topics, qrels, dataset_name, model_name, path_to_root,
-                       model_directory, alpha_vals=None, save_trec_files_only=True):
+                       model_directory, alpha_vals=None):
     if save_trec_files_only:
         return getOptimalAlpha(dataset_name, "BM25 >> " + model_name, model_directory)
 
@@ -110,7 +109,7 @@ def get_model_name(exp_name):
     return model
 
 
-def run_single_experiment(pipeline, topics, qrels, evaluation_metrics, name, timed=False, save_trec_files_only=True):
+def run_single_experiment(pipeline, topics, qrels, evaluation_metrics, name, timed=False):
     if save_trec_files_only:
         result = pipeline(topics)
         final_significance_testing = pt.model.add_ranks(result)
@@ -321,7 +320,7 @@ def get_timeit_dependencies(dataset_name, test_topics, q_encoder, model_name,
 
 
 def run_pipeline_multiple_datasets_metrics(dataset_names, test_set_names, dev_set_names, q_encoder, model_name,
-                                           path_to_root, model_directory, save_trec_files_only=True):
+                                           path_to_root, model_directory):
     pipeline_name = "BM25 >> " + model_name
     file_path = path_to_root + "/" + model_directory + "/results/ranking_metrics_alpha.csv"
     global eval_metrics
@@ -350,6 +349,7 @@ def run_pipeline_multiple_datasets_metrics(dataset_names, test_set_names, dev_se
             print(dataset_names[i] + " FAILED")
             print(f"An error occurred: {e} for dataset {dataset_names[i]}")
             print(traceback.print_exc())
+
     if not save_trec_files_only:
         duplicate_dataframe = pd.read_csv(file_path)
 
@@ -364,7 +364,7 @@ def run_pipeline_multiple_datasets_metrics(dataset_names, test_set_names, dev_se
         return None
 
 
-def getOptimalAlpha(dataset_name, pipeline_name, model_directory, save_trec_files_only=True):
+def getOptimalAlpha(dataset_name, pipeline_name, model_directory):
     experiment_name = get_dataset_name(dataset_name) + ": " + pipeline_name
     path_to_root = os.path.abspath(os.getcwd()) + '/'
 
