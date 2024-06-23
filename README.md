@@ -102,6 +102,6 @@ tests are the main active tasks on the machine despite  the presence of
 essential system processes.
 
 * Sparse and dense indexes, as well as the complete set of TREC runfiles are available on a request basis. The dense 
-indexes size should be considered as the biggest (MS MARCO) ones reach as much as 25 G.
+indexes size should be considered as the biggest (MS MARCO) ones reach as much as 25 GB.
 
  
