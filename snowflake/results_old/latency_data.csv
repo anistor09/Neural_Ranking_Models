@@ -1,3 +1,0 @@
-dataset,pipeline_name,mean_time_per_query (ms),exp_time (s),standard_dev_time (ms),nr_queries,timeit_details
-nfcorpus,BM25 >> snowflake-arctic-embed-m,20.2786,6.55,105.0,323,"6.55 s +- 105 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
-"
