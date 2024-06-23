@@ -11,15 +11,27 @@ from fast_forward_indexes_library_enhancements.disk import OnDiskIndex
 from general_dense_indexers.dense_index_one_dataset import get_dataset_name, format_name
 import traceback
 
+# Constant for reproducibility in randomized processes, such as data sampling
 SEED = 42
+
+# Evaluation metrics used for testing the Fast Forward indexes pipeline within Pyterrier.
+# These metrics measure ranking performance at various cutoffs to evaluate the effectiveness of retrieval methods.
+
 eval_metrics = [RR @ 10, nDCG @ 10, MAP @ 100]
 eval_metrics_general = [RR @ 10, nDCG @ 10, MAP @ 100]
 eval_metrics_msmarco = [RR(rel=2) @ 10, nDCG @ 10, MAP(rel=2) @ 100]
 
+# This flag controls whether to only save the TREC-formatted result files without executing further analyses like
+# ranking metrics computation, results saving, or alpha tuning on development sets. When True, the optimal alpha value
+# for each model is assumed to be pre-determined based on prior experiments.
 save_trec_files_only = False
 
 
 def load_sparse_index_from_disk(dataset_name, path_to_root, in_memory=True, wmodel="BM25", index_path=None):
+    """
+       Loads a sparse index from disk for the specified dataset using PyTerrier. If no index path is provided,
+       it constructs one based on the dataset name.
+    """
     if index_path is None:
         index_path = path_to_root + "/sparse_indexes/sparse_index_" + get_dataset_name(dataset_name)
 
@@ -34,6 +46,12 @@ def load_sparse_index_from_disk(dataset_name, path_to_root, in_memory=True, wmod
 
 def load_dense_index_from_disk(dataset_name, query_encoder, model_name, path_to_root, model_directory, mode=Mode.MAXP,
                                in_memory=True):
+    """
+        Loads a dense index from disk. The dense index is loaded into memory if the on_memory flag is set to True. This
+        might result to OOM exceptions if the code runs on a 16 G RAM machine for all datasets besides Fiqa, NFCorpus and
+        SciFact.
+    """
+
     index_path = path_to_root + "/" + model_directory + "/dense_indexes/ffindex_" + get_dataset_name(
         dataset_name) + "_" + format_name(
         model_name) + ".h5"
@@ -51,6 +69,11 @@ def load_dense_index_from_disk(dataset_name, query_encoder, model_name, path_to_
 
 def find_optimal_alpha(pipeline_no_interpolation, topics, qrels, dataset_name, model_name, path_to_root,
                        model_directory, alpha_vals=None):
+    """
+        Tunes the interpolation parameter alpha for combining sparse and dense retrieval results, aiming to optimize
+        the retrieval performance based on nDCG. The results for each alpha values are saved to support the final
+        parameter choices.
+    """
     if save_trec_files_only:
         return getOptimalAlpha(dataset_name, "BM25 >> " + model_name, model_directory)
 
@@ -85,6 +108,8 @@ def find_optimal_alpha(pipeline_no_interpolation, topics, qrels, dataset_name, m
         lantecy = round(((end - start) / 60), 2)
         print("END " + str(alpha) + " in " + str(lantecy) + "mins")
 
+    # Clean duplicate records and save unique entries
+
     duplicate_dataframe = pd.read_csv(file_path)
     unique_dataframe = duplicate_dataframe.groupby('name').tail(9)
     unique_dataframe.to_csv(file_path, index=False)
@@ -97,12 +122,20 @@ def find_optimal_alpha(pipeline_no_interpolation, topics, qrels, dataset_name, m
 
 
 def run_single_experiment_name(pipeline, dataset_name, evaluation_metrics, name, timed=False):
+    """
+        Fetches the desired test set and calls run_single_experiment for running an experiment in Pyterrier.
+
+    """
     test_set = pt.get_dataset(dataset_name)
     return run_single_experiment(pipeline, test_set.get_topics(),
                                  test_set.get_qrels(), evaluation_metrics, name, timed)
 
 
 def get_model_name(exp_name):
+    """
+        Gets model name from experiment name. E.g., bge-base-en-v1.5 from -> nfcorpus: BM25 >> bge-base-en-v1.5
+
+    """
     tokens = exp_name.split(":")
     model = tokens[1].split(" ")[3]
 
@@ -110,6 +143,10 @@ def get_model_name(exp_name):
 
 
 def run_single_experiment(pipeline, topics, qrels, evaluation_metrics, name, timed=False):
+    """
+        Runs an experiment in Pyterrier.
+
+    """
     if save_trec_files_only:
         result = pipeline(topics)
         final_significance_testing = pt.model.add_ranks(result)
@@ -138,12 +175,20 @@ def run_single_experiment(pipeline, topics, qrels, evaluation_metrics, name, tim
 
 
 def run_multiple_experiment_name(pipeline, dataset_name, evaluation_metrics, names):
+    """
+        Fetches the desired test set and calls run_single_experiment for running an experiment in Pyterrier by
+        evalauting multiple models within same experiment.
+
+    """
     test_set = pt.get_dataset(dataset_name)
     return run_multiple_experiment(pipeline, test_set.get_topics(),
                                    test_set.get_qrels(), evaluation_metrics, names)
 
 
 def run_multiple_experiment(pipelines, topics, qrels, evaluation_metrics, names):
+    """
+        Runs an experiment in Pyterrier by evalauting multiple models within same experiment.
+    """
     return pt.Experiment(
         pipelines,
         topics,
@@ -154,6 +199,9 @@ def run_multiple_experiment(pipelines, topics, qrels, evaluation_metrics, names)
 
 
 def get_test_dev_sets(test_set_name, dev_set_name):
+    """
+        Fetches the desired test and dev topics (queries) and qrels from Pyterrier.
+    """
     test_set = pt.get_dataset(test_set_name)
 
     dev_topics = None
@@ -173,6 +221,10 @@ def default_test_pipeline_name(dataset_name, test_set_name, q_encoder, eval_metr
                                path_to_root, model_directory, dev_set_name=None, timed=False, alpha=0.005,
                                in_memory_sparse=True,
                                in_memory_dense=True, index_path=None):
+    """
+        Fetches the test and dev topics (queries) and qrels from Pyterrier and evaluates those by calling
+        default_test_pipeline.
+    """
     test_topics, test_qrels, dev_topics, dev_qrels = get_test_dev_sets(test_set_name, dev_set_name)
 
     return default_test_pipeline(dataset_name, test_topics, test_qrels, q_encoder,
@@ -186,6 +238,13 @@ def load_pipeline_dependencies(dataset_name, q_encoder, model_name, pipeline_nam
                                path_to_root, model_directory, dev_topics=None, dev_qrels=None, alpha=0.005,
                                in_memory_sparse=True,
                                in_memory_dense=True, index_path=None):
+    """
+        Loads the dependencies of the default pipeline and returns the default_pipeline, the experiment name and the
+        alpha hyperparameter. For DBPedia and Fever, as they used characters such as è, é, ê, ë in the doc ids and an
+        additional transformer is used. The elements are transformed in their byte encoding before
+        adding them in the sparse index because otherwise Pyterrier truncates them and the doc ids from the first
+        (sparse) stage and the second (dense) stage will not be the same.
+    """
     # Get sparse retriever and semantic reranker for pipeline creation
 
     sparse_retriever, semantic_reranker, optimal_alpha = get_pipeline_transformers(dataset_name, q_encoder, model_name,
@@ -210,6 +269,10 @@ def default_test_pipeline(dataset_name, test_topics, test_qrels, q_encoder, eval
                           path_to_root, model_directory, dev_topics=None, dev_qrels=None, timed=False, alpha=0.005,
                           in_memory_sparse=True,
                           in_memory_dense=True, index_path=None):
+    """
+            Loads the dependencies of the default pipeline and runs an experiment. If alpha tuning is enabled, the 'best'
+            alpha values is also returned.
+    """
     default_pipeline, experiment_name, optimal_alpha = load_pipeline_dependencies(dataset_name, q_encoder, model_name,
                                                                                   pipeline_name,
                                                                                   path_to_root, model_directory,
@@ -229,6 +292,10 @@ def default_test_pipeline(dataset_name, test_topics, test_qrels, q_encoder, eval
 def test_first_stage_retrieval_name(dataset_name, test_set_name, eval_metrics, pipeline_name,
                                     path_to_root, timed=False, in_memory_sparse=True,
                                     index_path=None):
+    """
+        Instead of running the complete pipeline, this method fetches the dataset and calls test_first_stage_retrieval
+        for running.
+    """
     test_set = pt.get_dataset(test_set_name)
 
     return test_first_stage_retrieval(dataset_name, test_set.get_topics(), test_set.get_qrels(), eval_metrics,
@@ -240,6 +307,9 @@ def test_first_stage_retrieval_name(dataset_name, test_set_name, eval_metrics, p
 def test_first_stage_retrieval(dataset_name, test_topics, test_qrels, eval_metrics, pipeline_name,
                                path_to_root, timed=False, in_memory_sparse=True,
                                index_path=None):
+    """
+            Instead of running the complete pipeline, this method runs only the first stage retrieval.
+    """
     # Spare index
     retriever = load_sparse_index_from_disk(dataset_name, path_to_root, in_memory=in_memory_sparse,
                                             index_path=index_path)
@@ -255,6 +325,10 @@ def test_first_stage_retrieval(dataset_name, test_topics, test_qrels, eval_metri
 def get_timeit_dependencies_name(dataset_name, test_set_name, q_encoder, model_name,
                                  path_to_root, model_directory, dev_set_name=None, alpha=0.005, in_memory_sparse=True,
                                  in_memory_dense=True, index_path=None):
+    """
+           Fetches test and dev topics and qrels and the calls get_timeit_dependencies for getting the dependencies
+           needed for finding the latency of the second stage retrieval.
+    """
     test_topics, test_qrels, dev_topics, dev_qrels = get_test_dev_sets(test_set_name, dev_set_name)
 
     return get_timeit_dependencies(dataset_name, test_topics, q_encoder
@@ -268,6 +342,9 @@ def get_pipeline_transformers(dataset_name, q_encoder, model_name,
                               path_to_root, model_directory, dev_topics=None, dev_qrels=None, alpha=0.005,
                               in_memory_sparse=True,
                               in_memory_dense=True, index_path=None):
+    """
+        Loads the sparse and dense indexes and returns these alongside the most optimal alpha value.
+    """
     # Spare index
     retriever = load_sparse_index_from_disk(dataset_name, path_to_root, in_memory=in_memory_sparse,
                                             index_path=index_path)
@@ -304,6 +381,10 @@ def get_timeit_dependencies(dataset_name, test_topics, q_encoder, model_name,
                             path_to_root, model_directory, dev_topics=None, dev_qrels=None, alpha=0.005,
                             in_memory_sparse=True,
                             in_memory_dense=True, index_path=None):
+    """
+        Return the dependencies needed for running the latency experiments. Latency is computed only for the second
+        stage retrieval. For that reason, we return the results of the first stage retrieval and the semantic re-ranker.
+    """
     sparse_retriever, semantic_reranker, optimal_alpha = get_pipeline_transformers(dataset_name, q_encoder, model_name,
                                                                                    path_to_root, model_directory,
                                                                                    dev_topics=dev_topics,
@@ -321,6 +402,10 @@ def get_timeit_dependencies(dataset_name, test_topics, q_encoder, model_name,
 
 def run_pipeline_multiple_datasets_metrics(dataset_names, test_set_names, dev_set_names, q_encoder, model_name,
                                            path_to_root, model_directory):
+    """
+        Runs the default pipeline for multiple datasets and saves the corresponding ranking results on both evaluation
+        and development sets.
+    """
     pipeline_name = "BM25 >> " + model_name
     file_path = path_to_root + "/" + model_directory + "/results/ranking_metrics_alpha.csv"
     global eval_metrics
@@ -365,6 +450,9 @@ def run_pipeline_multiple_datasets_metrics(dataset_names, test_set_names, dev_se
 
 
 def getOptimalAlpha(dataset_name, pipeline_name, model_directory):
+    """
+        Fetches the default stored optimal alpha for a specific dataset, model pair.
+    """
     experiment_name = get_dataset_name(dataset_name) + ": " + pipeline_name
     path_to_root = os.path.abspath(os.getcwd()) + '/'
 
@@ -377,6 +465,9 @@ def getOptimalAlpha(dataset_name, pipeline_name, model_directory):
 
 
 def time_fct(func, *args, **kwargs):
+    """
+        Times any function for debugging purposes.
+    """
     start_time = time.perf_counter()
     result = func(*args, **kwargs)
     end_time = time.perf_counter()
@@ -387,8 +478,10 @@ def time_fct(func, *args, **kwargs):
 
 def latency_per_query(timeit_output, dataset_name, test_suffix, pipeline_name, model_directory,
                       result_filename=""):
-    # text_input = timeit_output.split(" s +- ")
-    # x = timeit_output.split(" ")
+    """
+        This function parses the timeit out, extract the mean and standard deviation of the altency per query and then
+        stores this results.
+    """
 
     if timeit_output.split(" ")[1] == "ms":
         text_input = timeit_output.split(" ms +- ")
@@ -420,6 +513,9 @@ def latency_per_query(timeit_output, dataset_name, test_suffix, pipeline_name, m
 
 def store_latency(dataset_name, pipeline_name, mean_time_per_query, exp_mean_time, standard_dev_time, len_topics,
                   timeit_output, model_directory, result_filename):
+    """
+        Stores the latency results.
+    """
     path_to_root = os.path.abspath(os.getcwd())
     file_path = path_to_root + '/../../' + model_directory + '/results/' + result_filename + "latency" '_data.csv'
 
@@ -438,4 +534,7 @@ def store_latency(dataset_name, pipeline_name, mean_time_per_query, exp_mean_tim
 
 
 def time_fct_print_results(func, *args, **kwargs):
+    """
+        Times a function and prints the results
+    """
     print(time_fct(func, *args, **kwargs))

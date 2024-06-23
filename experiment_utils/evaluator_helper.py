@@ -5,6 +5,9 @@ import os
 
 
 def merge_dataset_names(prefix, dataset_names, devset_suffixes, test_suffixes):
+    """
+        Combines dataset names with prefixes and respective suffixes for development and test sets.
+    """
     test_set_names = [prefix + dataset for dataset in [a + b for a, b in zip(dataset_names, test_suffixes)]]
     dev_set_names = [prefix + dataset for dataset in [a + b for a, b in zip(dataset_names, devset_suffixes)]]
     dataset_names = [prefix + dataset for dataset in dataset_names]
@@ -12,6 +15,9 @@ def merge_dataset_names(prefix, dataset_names, devset_suffixes, test_suffixes):
 
 
 def get_datasets():
+    """
+          Generates full dataset names with the appropriate suffixes for development and testing sets.
+    """
     prefix = "irds:"
 
     # dataset_names = ["beir/scifact", "beir/nfcorpus", "beir/fiqa", "beir/dbpedia-entity", "beir/quora", "beir/hotpotqa",
@@ -33,6 +39,9 @@ def get_datasets():
 
 
 def get_ranking_performance(q_encoder, project_directory, model_name, get_datasets_func=get_datasets):
+    """
+        Initializes PyTerrier and runs ranking performance metrics across multiple datasets.
+    """
     if not pt.started():
         pt.init()
 
@@ -49,6 +58,9 @@ def get_ranking_performance(q_encoder, project_directory, model_name, get_datase
 
 
 def main():
+    """
+        Main function to initialize the query encoder and execute the ranking performance evaluation.
+    """
     package = "BAAI/"
     model_name = "bge-base-en-v1.5"
     q_encoder = BgeQueryEncoder(package + model_name)
