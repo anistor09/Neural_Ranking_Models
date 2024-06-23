@@ -15,3 +15,5 @@ scaffolding/index
 #/e5/dense_indexes/
 #/nomic/dense_indexes/
 #/results/trec_runs/
+results/trec_runs/dbpedia-entity
+results/trec_runs/fiqa
