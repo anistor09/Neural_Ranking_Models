@@ -9,6 +9,7 @@ from fast_forward.encoder import TCTColBERTQueryEncoder
 
 
 def get_datasets():
+    """Combines dataset names with suffixes to generate dataset identifiers for testing and development."""
     prefix = "irds:"
 
     dataset_names = [ "beir/hotpotqa",
@@ -27,6 +28,7 @@ def get_datasets():
 
 
 def run_metrics_bge():
+    """Runs ranking performance metrics for BGE model variants."""
     model_names = ["bge-base-en-v1.5", "bge-small-en-v1.5"]
     for model_name in model_names:
         try:
@@ -43,6 +45,7 @@ def run_metrics_bge():
 
 
 def run_metrics_e5():
+    """Runs ranking performance metrics for E5 model variants."""
     model_names = ["e5-small-v2", "e5-base-v2", "e5-base-unsupervised"]
     for model_name in model_names:
         try:
@@ -59,6 +62,7 @@ def run_metrics_e5():
 
 
 def run_metrics_gte():
+    """Runs ranking performance metrics for the GTE Base model."""
     try:
         package = "Alibaba-NLP/"
         model_name = "gte-base-en-v1.5"
@@ -73,6 +77,7 @@ def run_metrics_gte():
 
 
 def run_metrics_nomic(model_name="nomic-embed-text-v1"):
+    """Runs ranking performance metrics for Nomic model."""
     try:
         package = "nomic-ai/"
         q_encoder = NomicQueryEncoder(package + model_name)
@@ -87,6 +92,7 @@ def run_metrics_nomic(model_name="nomic-embed-text-v1"):
 
 
 def run_metrics_snowflake():
+    """Runs ranking performance metrics for Snowflake model variants."""
     model_names = ["snowflake-arctic-embed-xs", "snowflake-arctic-embed-m"]
     for model_name in model_names:
         try:
@@ -102,6 +108,7 @@ def run_metrics_snowflake():
 
 
 def run_metrics_tct_colbert():
+    """Runs ranking performance metrics for the TCT-Colbert model."""
     try:
         model_name = "tct_colbert_msmarco"
         q_encoder = TCTColBERTQueryEncoder("castorini/tct_colbert-msmarco")
@@ -114,6 +121,11 @@ def run_metrics_tct_colbert():
 
 
 if __name__ == '__main__':
+    """
+        The purpose of this function is to save all the TREC Files or run all experiments again. If the formers is
+        desired the save_trec_files_only flag should be set to true within experiment_utils/experiments_helper.py.
+    """
+
     run_metrics_tct_colbert()
     print("TCT Colbert done")
 

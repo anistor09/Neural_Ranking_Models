@@ -18,6 +18,9 @@ models = ["tct_colbert_msmarco",
 
 
 def main():
+    """
+        Create statistical significance reports based on the TREC files of each dataset.
+    """
     # Initialize PyTerrier
     if not pt.started():
         pt.init(tqdm="notebook")
@@ -25,7 +28,7 @@ def main():
     for dataset_name in datasets_names:
 
         try:
-
+            # Construct path for TREC result files and load runs for each model.
             path = os.path.abspath(os.getcwd()) + "/results/trec_runs/" + dataset_name + "/"
 
             runs = []
@@ -41,11 +44,13 @@ def main():
 
             qrels = Qrels.from_df(qrels, q_id_col='qid', doc_id_col='docno', score_col='label')
 
+            # Compare runs using the specified metrics and significance testing.
             report = compare(qrels, runs, metrics=["mrr@10", "ndcg@10"], max_p=0.05,
                              stat_test='student', make_comparable=True)
 
             output_path = path + "/../../significance_reports/" + dataset_name
 
+            # Save reports to text and JSON files.
             with open(output_path + '.txt', 'w') as file:
                 file.write(str(report))
 
