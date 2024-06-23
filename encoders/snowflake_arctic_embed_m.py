@@ -7,17 +7,16 @@ import torch
 
 
 class SnowFlakeDocumentEncoder(Encoder):
-    """Uses a pre-trained transformer model for encoding. Returns the pooler output."""
+    """
+        Encoder using a pre-trained transformer model to generate embeddings for documents.
+        It omits the pooling layer for direct extraction of token embeddings.
+    """
 
     def __init__(
             self, model: Union[str, Path], device: str = "cpu", **tokenizer_args
     ) -> None:
-        """Create a transformer encoder.
-
-        Args:
-            model (Union[str, Path]): Pre-trained transformer model (name or path).
-            device (str, optional): PyTorch device. Defaults to "cpu".
-            **tokenizer_args: Additional tokenizer arguments.
+        """
+            Initializes the encoder with a specified transformer model. Configures the tokenizer and model for usage.
         """
         super().__init__()
         self.tokenizer = AutoTokenizer.from_pretrained(model)
@@ -28,6 +27,9 @@ class SnowFlakeDocumentEncoder(Encoder):
         self.tokenizer_args = tokenizer_args
 
     def encode(self, documents: Sequence[str]) -> Tensor:
+        """
+            Encodes documents into normalized embeddings using the transformer model.
+        """
         document_tokens = self.tokenizer(documents, padding=True, truncation=True, return_tensors='pt', max_length=512)
         document_tokens.to(self.device)
 
@@ -43,7 +45,14 @@ class SnowFlakeDocumentEncoder(Encoder):
 
 
 class SnowFlakeQueryEncoder(SnowFlakeDocumentEncoder):
+    """
+        Extends the SnowFlakeDocumentEncoder to tailor embeddings specifically for query data by prepending a standard prefix.
+    """
+
     def __call__(self, queries: Sequence[str]) -> Tensor:
+        """
+            Encodes queries by prepending a fixed instruction to enhance relevance for search applications.
+        """
         query_prefix = 'Represent this sentence for searching relevant passages: '
         queries_with_prefix = ["{}{}".format(query_prefix, i) for i in queries]
         return self.encode(queries_with_prefix)
