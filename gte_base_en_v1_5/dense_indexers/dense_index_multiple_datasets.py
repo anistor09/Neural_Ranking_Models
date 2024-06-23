@@ -17,7 +17,7 @@ def index_gte_base_collections():
 
 def main():
     """
-        Main function that executes the indexing of multiple datasets. It handles exceptions that might occur during
+        Main function that executes the indexing of multiple datasets with GTE Base model. It handles exceptions that might occur during
         the indexing process and logs them, ensuring that all possible errors are noted and can be addressed.
     """
     try:
