@@ -1,6 +1,6 @@
 # The impact of the semantic matching within interpolation-based re-ranking
 
-This README file supports my final bachelor thesis that can be found at: < input thesis link >. Before using the library,
+This README file supports my final bachelor thesis that can be found [here](https://repository.tudelft.nl/record/uuid:bca3254c-88e1-4285-9222-ab81afa4daac). Before using the library,
 it is strongly recomended to read the previously mentioned paper, alongside the Fast-Forward indexes paper (https://arxiv.org/abs/2311.01263). 
 
 ## Repository overview
